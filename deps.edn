@@ -1,22 +1,28 @@
 {:aliases
- {:sys-loader {:main-opts ["-m" "sys-loader.core"]},
-  :dev {:extra-paths ["dev"]},
+ {:sys-loader {:main-opts ["-m" "sys-loader.core"]}
+  :dev {:extra-paths ["dev"]}
   :test
-  {:extra-paths ["test" "test/resources"],
+  {:extra-paths ["test" "test/resources"]
    :extra-deps
-   {org.clojure/test.check {:mvn/version "0.10.0"},
+   {test-repo-1/test-repo-1
+    {:git/url "https://github.com/tstout/test-repo-1"
+     :sha "3d3347874c081a7a28cd0f7c26fc616bc9253207"}
+    test-repo-2/test-repo-2
+    {:git/url "https://github.com/tstout/test-repo-2"
+     :sha "be9e26d2a38b439b9a07688785c085fe892fcb82"}
+    org.clojure/test.check {:mvn/version "0.10.0"}
     expectations/clojure-test
-    {:git/url "https://github.com/clojure-expectations/clojure-test",
-     :sha "ea94caad53ad390f6485f0d32bdb022e89ab5a4b"},
+    {:git/url "https://github.com/clojure-expectations/clojure-test"
+     :sha "ea94caad53ad390f6485f0d32bdb022e89ab5a4b"}
     pjstadig/humane-test-output
-    {:git/url "https://github.com/pjstadig/humane-test-output",
-     :sha "063ee9ff5adc5cf94ff7ab790ad6a80e6263ebc8"}}},
+    {:git/url "https://github.com/pjstadig/humane-test-output"
+     :sha "063ee9ff5adc5cf94ff7ab790ad6a80e6263ebc8"}}}
   :runner
   {:extra-deps
    {com.cognitect/test-runner
-    {:git/url "https://github.com/cognitect-labs/test-runner.git",
-     :sha "209b64504cb3bd3b99ecfec7937b358a879f55c1"}},
-   :extra-paths ["test"],
-   :main-opts ["-m" "cognitect.test-runner" "-d" "test"]}},
- :paths ["resources" "src"],
+    {:git/url "https://github.com/cognitect-labs/test-runner.git"
+     :sha "209b64504cb3bd3b99ecfec7937b358a879f55c1"}}
+   :extra-paths ["test"]
+   :main-opts ["-m" "cognitect.test-runner" "-d" "test"]}}
+ :paths ["resources" "src"]
  :deps {org.clojure/tools.cli {:mvn/version "0.3.5"}}}
