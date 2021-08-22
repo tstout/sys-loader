@@ -1,7 +1,9 @@
 (ns sys-loader.deps)
 
 (defn find-a-node [deps already-have-nodes]
-  (some (fn [[k v]] (when (empty? (remove already-have-nodes v)) k)) deps))
+  (some (fn [[k v]] 
+          (when (empty? (remove already-have-nodes v)) k)) 
+        deps))
 
 (defn order-deps
   "Topological sort to determine proper dependency order.

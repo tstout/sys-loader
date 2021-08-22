@@ -1,11 +1,12 @@
 (ns sys-loader.core
   (:require [clojure.tools.cli :refer [parse-opts]]
             [clojure.edn :as edn]
-            [clojure.string :as s]))
+            [clojure.string :as s]
+            [taoensso.timbre :as log]))
 
 (defn load-plugin [url]
-  (let [{:keys [description init]} (edn/read-string (slurp url))]
-    (println (str "loading module: " description))
+  (let [{:keys [description init deps]} (edn/read-string (slurp url))]
+    (log/infof "loading module: %s" description)
     (-> init
         str
         (s/split #"/")
@@ -22,7 +23,7 @@
         (recur)))))
 
 (defn init []
-  (println "-----Plugin Init---------"))
+  (log/info "-----Plugin Init---------"))
 
 
 (defn -main [& args]
