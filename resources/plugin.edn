@@ -1,4 +1,0 @@
-{:description "example plugin"
- :name :loader
- :deps []
- :init sys-loader.core/init}

@@ -5,7 +5,7 @@
             [taoensso.timbre :as log]))
 
 (defn load-plugin [url]
-  (let [{:keys [description init deps]} (edn/read-string (slurp url))]
+  (let [{:keys [sys/description sys/init sys/deps]} (edn/read-string (slurp url))]
     (log/infof "loading module: %s" description)
     (-> init
         str

@@ -1,8 +1,8 @@
 (ns sys-loader.deps)
 
 (defn find-a-node [deps already-have-nodes]
-  (some (fn [[k v]] 
-          (when (empty? (remove already-have-nodes v)) k)) 
+  (some (fn [[k v]]
+          (when (empty? (remove already-have-nodes v)) k))
         deps))
 
 (defn order-deps
@@ -18,10 +18,13 @@
          (dissoc deps item)
          (conj already-have-nodes item)
          (conj output item))
-        (throw (Exception. "Circular dependency."))))))
+        (throw (Exception. "Circular dependency or undefined dependency"))))))
 
 
 (comment
   (order-deps {:db [] :log [:db] :service-1 [:log :service-2] :service-2 [:log]})
+
+  (order-deps {:log [:db] :db []})
+
   ;;
   )
