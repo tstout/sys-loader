@@ -1,30 +1,11 @@
 (ns sys-loader.core
   (:require [clojure.tools.cli :refer [parse-opts]]
-            [clojure.edn :as edn]
-            [clojure.string :as s]
-            [taoensso.timbre :as log]))
-
-(defn load-plugin [url]
-  (let [{:keys [sys/description sys/init sys/deps]} (edn/read-string (slurp url))]
-    (log/infof "loading module: %s" description)
-    (-> init
-        str
-        (s/split #"/")
-        first
-        symbol
-        require)
-    ((resolve init))))
-
-(defn load-plugins []
-  (let [plugins (.getResources (ClassLoader/getSystemClassLoader) "plugin.edn")]
-    (loop []
-      (load-plugin (.. plugins nextElement openStream))
-      (when (.hasMoreElements plugins)
-        (recur)))))
+            [taoensso.timbre :as log]
+            [sys-loader.plugin :refer [load-plugins-in-order]]))
 
 (defn init []
   (log/info "-----Plugin Init---------"))
 
 
 (defn -main [& args]
-  (load-plugins))
+  (load-plugins-in-order))
