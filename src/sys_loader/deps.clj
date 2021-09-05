@@ -21,7 +21,7 @@
         (throw (Exception. "Circular or undefined dependency"))))))
 
 (defn build-deps
-  "Merge all plugin name and deps into a single collection suitable for processing by
+  "Merge all plugin name and deps into a single sequence suitable for processing by
    order-deps"
   [deps]
   (->>

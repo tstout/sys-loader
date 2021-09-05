@@ -3,21 +3,6 @@
             [clojure.string :as s]
             [taoensso.timbre :as log]))
 
-;; (defn load-plugin [url]
-;;   (let [{:keys [sys/description sys/init sys/deps]} (edn/read-string (slurp url))]
-;;     (log/infof "loading module: %s" description)
-;;     (-> init
-;;         str
-;;         (s/split #"/")
-;;         first
-;;         symbol
-;;         require)
-;;     ((resolve init))))
-
-
-
-;; (defn init-plugins [init-fns]
-;;   (resolve init-fn))
 
 ;; TODO - name of this fn should probably be read-plugin-cfg
 (defn load-plugin-cfg
@@ -54,7 +39,5 @@
 (comment
   (load-plugin-cfg)
   (load-plugins-in-order)
-  (flatten [{:a 1} [{:d 1} {:e 1}]])
-
   ;;
   )
