@@ -11,10 +11,10 @@
 (defexpect example-test-label (expect 1 1))
 
 
-(defn init1 []
+(defn init1 [_]
   (log/info "-----Plugin Init-1---------"))
 
-(defn init2 []
+(defn init2 [_]
   (log/info "-----Plugin Init-2---------"))
 
 (comment

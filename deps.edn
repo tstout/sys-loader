@@ -9,12 +9,10 @@
    :extra-deps
    {test-repo-1/test-repo-1
     {:git/url "https://github.com/tstout/test-repo-1"
-     :sha     "eaa12ca87608da11f219f712d2ce75c01db8aee1"
-     :tag     "1.0.1"}
+     :sha     "97fb4ce9afdb7757846a0f50e8a6db0f8df7ec7a"}
     test-repo-2/test-repo-2
     {:git/url "https://github.com/tstout/test-repo-2"
-     :sha     "05c102521622c01bdf16bc108c3d6314b31ab86a"
-     :tag     "1.0.1"}
+     :sha     "8e73bd29967053b73dc540ac61070fbcf5e15e6a"}
     org.clojure/test.check {:mvn/version "0.10.0"}
     expectations/clojure-test
     {:git/url "https://github.com/clojure-expectations/clojure-test"

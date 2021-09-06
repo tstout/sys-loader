@@ -19,34 +19,42 @@
                     (conj output)))
         (flatten output)))))
 
-(defn load-plugin [plugin]
-  (let [{:keys [sys/description sys/init sys/deps]} plugin]
-    (log/infof "loading module: %s" description)
+(defn load-plugin [plugin state]
+  (let [{:keys [sys/description sys/init sys/name]} plugin]
+    (log/infof "loading module: %s" name)
     (-> init
         str
         (s/split #"/")
         first
         symbol
         require)
-    ((resolve init))))
+    ((resolve init) state)))
 
 (defn find-by-name [name plugins]
   (->> plugins
        (filter #(= name (:sys/name %)))
        first))
 
-(defn load-plugins-in-order []
+(defn load-plugins-in-order!
+  "Search the classpath for resources files named plugin.edn. For each plugin configuration found,
+   Invoke the init function in the appropriate order as specified by any dependencies listed.
+   The init function can return some state, which is meged into a map and successivley passed to 
+   init functions. This function returns the merged results from all init functions."
+  []
   (let [plugins (load-plugin-cfg)
         deps (-> plugins
                  build-deps
                  order-deps)]
-    (doseq [plugin deps]
-      (load-plugin (find-by-name plugin plugins)))))
+    (reduce (fn [accum plugin-name]
+              (let [cfg (find-by-name plugin-name plugins)]
+                (merge accum {plugin-name (load-plugin cfg accum)})))
+            {}
+            deps)))
 
 
 (comment
   (load-plugin-cfg)
-  (load-plugins-in-order)
+  (load-plugins-in-order!)
 
   (def deps (-> (load-plugin-cfg) build-deps order-deps))
 
