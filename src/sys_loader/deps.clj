@@ -20,6 +20,9 @@
          (conj output item))
         (throw (Exception. "Circular or undefined dependency"))))))
 
+(defn rm-unknown [x]
+  (dissoc x :unknown))
+
 (defn build-deps
   "Merge all plugin name and deps into a single sequence suitable for processing by
    order-deps"
@@ -27,8 +30,8 @@
   (->>
    deps
    (map
-    #_#(select-keys % [:sys/name :sys/deps])
-    (fn [coll] {(:sys/name coll) (:sys/deps coll [])}))
+    (fn [x] (rm-unknown
+                {(:sys/name x :unknown) (:sys/deps x [])})))
    (apply merge)))
 
 (comment
@@ -39,14 +42,14 @@
               {:sys/description "example plugin2"
                :sys/name :service-a
                :sys/deps []
-               :sys/init 'sys-loader.core-test/init}])
+               :sys/init 'sys-loader.core-test/init}
+              {}])
 
   (build-deps p-def)
 
   (-> p-def
       build-deps
       order-deps)
-
   (order-deps {:db [] :log [:db] :service-1 [:log :service-2] :service-2 [:log]})
 
   (order-deps {:log [:db] :db []})

@@ -1,10 +1,9 @@
 (ns sys-loader.plugin
   (:require [clojure.edn :as edn]
             [clojure.string :as s]
-            [taoensso.timbre :as log]))
+            [taoensso.timbre :as log]
+            [sys-loader.deps :refer [order-deps build-deps]]))
 
-
-;; TODO - name of this fn should probably be read-plugin-cfg
 (defn load-plugin-cfg
   "Traverse the resources in the classpath, looking for plugin.edn files.
    Returns a sequence of all plugin definitions found."
@@ -31,13 +30,26 @@
         require)
     ((resolve init))))
 
+(defn find-by-name [name plugins]
+  (->> plugins
+       (filter #(= name (:sys/name %)))
+       first))
+
 (defn load-plugins-in-order []
-  (doseq [plugin (load-plugin-cfg)]
-    (load-plugin plugin)))
+  (let [plugins (load-plugin-cfg)
+        deps (-> plugins
+                 build-deps
+                 order-deps)]
+    (doseq [plugin deps]
+      (load-plugin (find-by-name plugin plugins)))))
 
 
 (comment
   (load-plugin-cfg)
   (load-plugins-in-order)
+
+  (def deps (-> (load-plugin-cfg) build-deps order-deps))
+
+  (-> (load-plugin-cfg) build-deps)
   ;;
   )
