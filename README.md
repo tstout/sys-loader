@@ -6,7 +6,7 @@ A plugin.edn file is loaded as a resource. The EDN file contains a qualified ini
 ```
 clj -M:sys-loader:service-1:service-1
 ```
-This composition of dependencies is a fundamental design of cli-deps. Simple, powerful, interesting. The clojure way. The term service here is abstract. It is not meant to imply a typical web service accepting http requests. It could be this, but not necessarily. Each dependency listed after the sys-loader alias given above, contains a plugin.edn resource file containing the init function needed to initialize the component. The edn file can also contain a list of dependencies. The sys-loader implementation will do a topological sort to invoke the init functions in the appropriate order. Plugin/Module init functions
+This composition of dependencies is a fundamental design of cli-deps. Simple, powerful, interesting. The clojure way. The term service here is abstract. It is not meant to imply a typical web service accepting http requests. It could be this, but not necessarily. Each dependency listed after the sys-loader alias given above, contains a plugin.edn resource file containing the init function needed to initialize the component. The edn file can also contain a list of dependencies. The sys-loader implementation will do a topological sort to invoke the init functions in the appropriate order. 
 ## IPC
 A socket API may evolve to send control and status requests to the sys-loader jvm. However, for starters, a simpler memory-mapped file supported by NIO is likely sufficient. This will support A CLI to send commands to the loader. A CLI will be the primary user interface. Spinning up a webserver to provide a UI might be a little heavy-weight.
 
