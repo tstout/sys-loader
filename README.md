@@ -1,6 +1,6 @@
 # Overview
 This is essentially some nostalgia for something like what I was trying to achieve with [splumb](https://github.com/tstout/splumb).  I’m leaning now toward something useful that can spin up a system of components, modules, plugins, etc. I have not developed a name for the base unit that I like. However, clojure makes the plugin thing easy.
-Clojure’s cli-deps tools provide a simple, compelling environment for combining “components” stored across multiple git repositories.
+Clojure’s [cli-deps](https://github.com/tstout/splumb) tools provide a simple, compelling environment for combining “components” stored across multiple git repositories.
 ## Design
 A plugin.edn file is loaded as a resource. The EDN file contains a qualified init function and a vector of dependent plugins (services/modules/components)  which is required, then invoked. The cli-deps tooling makes building up the classpath and invoking configured functions simple. For example, 
 ```
