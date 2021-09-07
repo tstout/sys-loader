@@ -4,6 +4,7 @@
             [taoensso.timbre :as log]
             [sys-loader.deps :refer [order-deps build-deps]]))
 
+;; TODO - add intrinsic plugins here
 (defn load-plugin-cfg
   "Traverse the resources in the classpath, looking for plugin.edn files.
    Returns a sequence of all plugin definitions found."
@@ -39,7 +40,7 @@
   "Search the classpath for resources files named plugin.edn. For each plugin configuration found,
    Invoke the init function in the appropriate order as specified by any dependencies listed.
    The init function can return some state, which is meged into a map and successivley passed to 
-   init functions. This function returns the merged results from all init functions."
+   init functions. Returns the merged results from all init functions."
   []
   (let [plugins (load-plugin-cfg)
         deps (-> plugins
