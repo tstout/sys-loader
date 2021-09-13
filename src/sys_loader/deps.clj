@@ -53,5 +53,7 @@
   (order-deps {:db [] :log [:db] :service-1 [:log :service-2] :service-2 [:log]})
 
   (order-deps {:log [:db] :db []})
+
+  (future)
   ;;
   )
