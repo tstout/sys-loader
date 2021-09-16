@@ -1,6 +1,5 @@
 (ns sys-loader.db
-  (:require [next.jdbc :as jdbc]
-            [next.jdbc.connection :as connection])
+  (:require [next.jdbc :as jdbc])
   (:import (java.net InetAddress)
            (org.h2.tools Server)
            (org.h2.jdbcx JdbcConnectionPool)))
