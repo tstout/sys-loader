@@ -12,7 +12,6 @@
          :level     (name level)
          :namespace (str ?ns-str)
          :msg       (str (force msg_))}]
-    (prn data)
     (with-open [conn (jdbc/get-connection db)]
       (sql/insert! conn :log entry))))
 
@@ -40,6 +39,8 @@
   (config-logging ds)
 
   (log/info "Hello!")
+
+  (time (log/info "Hello3"))
 
   ;;
   )
