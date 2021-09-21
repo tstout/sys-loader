@@ -16,7 +16,6 @@
 (defn mk-datasource []
   (JdbcConnectionPool/create (:server jdbcUrls) "sa" ""))
 
-
 (defn mk-h2-server
   "Create an H2 server on port 9092. Returns a function which accepts the operations
   :start and :stop"
@@ -30,7 +29,20 @@
                 :stop  (fn [] (.stop server))}]
     (fn [operation & args] (-> (server-ops operation) (apply args)))))
 
+(defn init [_]
+  (let [server (mk-h2-server)]
+    (server :start)
+    {:server server
+      :data-source (mk-datasource)}))
+
+
 (comment
+  (def state (init {}))
+
+  state
+
+  ((-> :server state) :stop)
+  
   (def server (mk-h2-server))
   (server :start)
   (server :stop)

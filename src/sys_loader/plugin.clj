@@ -4,7 +4,17 @@
             [taoensso.timbre :as log]
             [sys-loader.deps :refer [order-deps build-deps]]))
 
-;; TODO - add intrinsic plugins here
+(def intrinsics
+  "Define plugins that are baked-in to sys-loader"
+  [{:sys/description "Database service"
+    :sys/name :sys/db
+    :sys/deps []
+    :sys/init 'sys-loader.db/init}
+   {:sys/description "Logging"
+    :sys/name :sys/logging
+    :sys/deps [:sys/db]
+    :sys/init 'sys-loader.logging/init}])
+
 (defn load-plugin-cfg
   "Traverse the resources in the classpath, looking for plugin.edn files.
    Returns a sequence of all plugin definitions found."
@@ -18,11 +28,11 @@
                     slurp
                     edn/read-string
                     (conj output)))
-        (flatten output)))))
+        (-> intrinsics (conj output) flatten)))))
 
 (defn load-plugin [plugin state]
   (let [{:keys [sys/description sys/init sys/name]} plugin]
-    (log/infof "loading module: %s" name)
+    (log/infof "loading module: %s %s" name init)
     (-> init
         str
         (s/split #"/")
@@ -39,7 +49,7 @@
 (defn load-plugins-in-order!
   "Search the classpath for resources files named plugin.edn. For each plugin configuration found,
    Invoke the init function in the appropriate order as specified by any dependencies listed.
-   The init function can return some state, which is meged into a map and successivley passed to 
+   The init function can return some state, which is merged into a map and successivley passed to 
    init functions. Returns the merged results from all init functions."
   []
   (let [plugins (load-plugin-cfg)
@@ -54,11 +64,13 @@
 
 
 (comment
+  *e
   (load-plugin-cfg)
   (load-plugins-in-order!)
 
   (def deps (-> (load-plugin-cfg) build-deps order-deps))
 
   (-> (load-plugin-cfg) build-deps)
+  (flatten (conj [{:a 1}] [{:b 1} {:c 1}]))
   ;;
   )

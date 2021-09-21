@@ -6,11 +6,12 @@
            [java.util Date]))
 
 (defn log-message [db data]
-  (let [{:keys [instant level ?ns-str msg_]} data
+  (let [{:keys [instant level ?ns-str msg_ ?line]} data
         entry
         {:instant   (Timestamp. (.getTime ^Date instant))
          :level     (name level)
          :namespace (str ?ns-str)
+         :line      ?line
          :msg       (str (force msg_))}]
     (with-open [conn (jdbc/get-connection db)]
       (sql/insert! conn :log entry))))
@@ -27,8 +28,10 @@
   (log/set-level! :debug)
   (log/merge-config! {:appenders {:h2 (h2-appender db)}
                       :timestamp-opts {:pattern "yyyy-MM-dd HH:mm:ss.SS"}})
-  (log/info "DB Logging Initialized"))
+  (log/info "Logging Initialized"))
 
+(defn init [state]
+  (config-logging (-> :sys/db state :data-source)))
 
 (comment
   *e
@@ -38,7 +41,7 @@
 
   (config-logging ds)
 
-  (log/info "Hello!")
+  (log/info "Hello!--")
 
   (time (log/info "Hello3"))
 
