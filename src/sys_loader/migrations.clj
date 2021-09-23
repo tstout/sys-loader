@@ -28,7 +28,7 @@
     (str (-> :ns m str) "/" (:name m))))
 
 (defn run-and-record [conn migration]
-  (migration conn)
+  (migration (partial run-ddl conn))
   (sql/insert! conn :migrations {:name (var-ns migration)
                                  :created_at (Timestamp. (System/currentTimeMillis))}))
 
@@ -42,13 +42,22 @@
               :when (not (already-run? (var-ns m)))]
         (run-and-record db-conn m)))))
 
+(defn init [state]
+  (let [db (-> :sys/db state :data-source)]
+    (partial migrate db)))
+
 (comment
+  *e
+  (def migrator (init {:sys/db {:data-source (mk-datasource)}}))
+
+  (migrator :run-ddl "logging")
+
+  (defn t-migration [run-ddl]
+    (run-ddl "logging"))
+
+  (migrator :migrate #'t-migration)
+
   (load-sql "intrinsic")
-
-  (defn logging [conn]
-    (run-ddl conn "logging"))
-
-  (var-ns #'logging)
 
   (def ds (mk-datasource))
 

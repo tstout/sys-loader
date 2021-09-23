@@ -30,8 +30,15 @@
                       :timestamp-opts {:pattern "yyyy-MM-dd HH:mm:ss.SS"}})
   (log/info "Logging Initialized"))
 
+
+(defn logging-ddl [run-ddl]
+  (run-ddl "logging"))
+
 (defn init [state]
-  (config-logging (-> :sys/db state :data-source)))
+  (let [db (-> :sys/db state :data-source)
+        migrate (-> :sys/migrations state)]
+    (migrate #'logging-ddl)
+    (config-logging db)))
 
 (comment
   *e

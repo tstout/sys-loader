@@ -12,8 +12,12 @@
     :sys/init 'sys-loader.db/init}
    {:sys/description "Logging"
     :sys/name :sys/logging
+    :sys/deps [:sys/db :sys/migrations]
+    :sys/init 'sys-loader.logging/init}
+   {:sys/description "Migrations"
+    :sys/name :sys/migrations
     :sys/deps [:sys/db]
-    :sys/init 'sys-loader.logging/init}])
+    :sys/init 'sys-loader.migrations/init}])
 
 (defn load-plugin-cfg
   "Traverse the resources in the classpath, looking for plugin.edn files.

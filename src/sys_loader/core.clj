@@ -8,4 +8,14 @@
 
 
 (defn -main [& args]
-  (load-plugins-in-order!))
+    (load-plugins-in-order!)
+    (log/infof "sys-loader started"))
+
+
+(comment
+  (log/infof "foo bar %s" "baz")
+
+  (def s (with-out-str (time (log/infof "foo bar %s" "baz"))))
+  s
+  ;;
+  )
