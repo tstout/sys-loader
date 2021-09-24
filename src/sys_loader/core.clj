@@ -8,8 +8,8 @@
 
 
 (defn -main [& args]
-    (load-plugins-in-order!)
-    (log/infof "sys-loader started"))
+  (load-plugins-in-order!)
+  (log/infof "sys-loader started"))
 
 
 (comment

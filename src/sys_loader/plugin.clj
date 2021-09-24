@@ -6,7 +6,7 @@
 
 (def intrinsics
   "Define plugins that are baked-in to sys-loader"
-  [{:sys/description "Database service"
+  [{:sys/description "Database"
     :sys/name :sys/db
     :sys/deps []
     :sys/init 'sys-loader.db/init}
@@ -69,6 +69,7 @@
 
 (comment
   *e
+  intrinsics
   (load-plugin-cfg)
   (load-plugins-in-order!)
 
