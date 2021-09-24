@@ -1,12 +1,14 @@
 # Overview
-This is essentially some nostalgia for something I was trying to achieve with [splumb](https://github.com/tstout/splumb).  I’m leaning now toward something useful that can spin up a system of components, modules, plugins, etc. I have not developed a name for the base unit that I like. However, clojure makes the plugin thing easy.
-Clojure’s [cli-deps](https://clojure.org/guides/deps_and_cli) tools provide a simple, compelling environment for combining “components” stored across multiple git or maven repositories.
+This is essentially a reboot of something I was experimenting with years ago in this code base [splumb](https://github.com/tstout/splumb).  I’m leaning now toward something useful that can spin up a system of components, modules, plugins, etc. I have not developed a name for the base unit that I like. 
+Clojure’s [cli-deps](https://clojure.org/guides/deps_and_cli) tools provide a simple, compelling environment for combining libraries stored across multiple git or maven repositories.
 ## Design
-A plugin.edn file is loaded as a resource. The EDN file contains a qualified init function and a vector of dependent plugins (services/modules/components)  which is required, then invoked. The cli-deps tooling makes building up the classpath and invoking configured functions simple. For example, 
+A plugin.edn file is loaded as a resource. The EDN file contains a namespace qualified init function and a vector of dependent plugins (services/modules/components)  which is (required), then invoked. The cli-deps tooling makes building up the classpath and invoking configured functions simple. For example, 
 ```
 clj -M:sys-loader:service-1:service-2:service-n
 ```
-This composition of dependencies is a fundamental design of cli-deps. Simple, powerful, interesting. The clojure way. The term service here is abstract. It is not meant to imply a typical web service accepting http requests. It could be this, but not necessarily. Each dependency listed after the sys-loader alias given above, contains a plugin.edn resource file containing the init function needed to initialize the component. The edn file can also contain a list of dependencies. The sys-loader implementation will do a topological sort to invoke the init functions in the appropriate order. 
+This composition of dependencies is a fundamental design of cli-deps. Simple, powerful, interesting. The clojure way. The term service here is abstract. It is not meant to imply a web service accepting http requests. It could be this, but not necessarily. Each dependency listed after the sys-loader alias given above, contains a plugin.edn resource file containing the init function needed to initialize the component. The EDN file can also contain a list of dependencies. The sys-loader implementation will do a topological sort to invoke the init functions in the appropriate order. 
+The cli-deps tooling can be combined with other compatible tools such as [depstar](https://github.com/seancorfield/depstar) to create uberjars for convenient deployment which does not require cli-deps
+at runtime.
 ## IPC
 A socket API may evolve to send control and status requests to the sys-loader jvm. However, for starters, a simpler memory-mapped file supported by NIO is likely sufficient. This will support A CLI to send commands to the loader. A CLI will be the primary user interface. Spinning up a webserver to provide a UI might be a little heavy-weight.
 
