@@ -70,12 +70,7 @@
   (set
    (map :MIGRATIONS/NAME (sql/query ds ["select name from migrations"])))
 
-  (run-and-record ds #'logging)
-
-  *e
-
   (namespace :LOG/MSG)
-  (migrate ds #'logging)
   ;;
   )
 

@@ -33,16 +33,17 @@
   (let [server (mk-h2-server)]
     (server :start)
     {:server server
-      :data-source (mk-datasource)}))
+     :data-source (mk-datasource)}))
 
 
 (comment
+  *e
   (def state (init {}))
 
   state
 
   ((-> :server state) :stop)
-  
+
   (def server (mk-h2-server))
   (server :start)
   (server :stop)
@@ -60,8 +61,6 @@
 );")
 
   (jdbc/execute! ds [create-table])
-
-  *e
 
   ;;
   )
