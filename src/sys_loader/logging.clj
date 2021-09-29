@@ -1,17 +1,19 @@
 (ns sys-loader.logging
   (:require [taoensso.timbre :as log]
             [next.jdbc :as jdbc]
-            [next.jdbc.sql :as sql])
+            [next.jdbc.sql :as sql]
+            [clojure.string :refer [split]])
   (:import [java.sql Timestamp]
            [java.util Date]))
 
 (defn log-message [db data]
-  (let [{:keys [instant level ?ns-str msg_ ?line]} data
+  (let [{:keys [instant level ?ns-str msg_ ?line ?file]} data
         entry
         {:instant   (Timestamp. (.getTime ^Date instant))
          :level     (name level)
-         :namespace (str ?ns-str)
+         :namespace ?ns-str
          :line      ?line
+         :file      (-> ?file (split #"/") last)
          :msg       (str (force msg_))}]
     (with-open [conn (jdbc/get-connection db)]
       (sql/insert! conn :log entry))))
@@ -51,6 +53,8 @@
   (log/info "Hello!--")
 
   (time (log/info "Hello3"))
+
+  (split "/usr/var/lib/x.clj" #"/")
 
   ;;
   )

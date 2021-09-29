@@ -1,8 +1,8 @@
 (ns sys-loader.db
   (:require [next.jdbc :as jdbc])
-  (:import (java.net InetAddress)
-           (org.h2.tools Server)
-           (org.h2.jdbcx JdbcConnectionPool)))
+  (:import [java.net InetAddress]
+           [org.h2.tools Server]
+           [org.h2.jdbcx JdbcConnectionPool]))
 
 (defn host-name []
   (.. InetAddress getLocalHost getHostName))
@@ -13,6 +13,7 @@
                 (host-name)
                 "/~/.sys-loader/db/sys-loader;jmx=true")})
 
+;; TODO - support non-default password
 (defn mk-datasource []
   (JdbcConnectionPool/create (:server jdbcUrls) "sa" ""))
 

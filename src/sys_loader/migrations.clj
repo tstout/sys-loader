@@ -71,6 +71,9 @@
    (map :MIGRATIONS/NAME (sql/query ds ["select name from migrations"])))
 
   (namespace :LOG/MSG)
+
+  (-> "hello" (doto tap>) seq count)
+
   ;;
   )
 

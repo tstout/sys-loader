@@ -1,6 +1,6 @@
 (ns sys-loader.plugin
   (:require [clojure.edn :as edn]
-            [clojure.string :as s]
+            [clojure.string :refer [split]]
             [taoensso.timbre :as log]
             [sys-loader.deps :refer [order-deps build-deps]]))
 
@@ -36,10 +36,10 @@
 
 (defn load-plugin [plugin state]
   (let [{:keys [sys/description sys/init sys/name]} plugin]
-    (log/infof "loading module: %s %s" name init)
+    (log/infof "loading module: %s %s %s" name init description)
     (-> init
         str
-        (s/split #"/")
+        (split #"/")
         first
         symbol
         require)

@@ -1,4 +1,5 @@
-(ns user)
+(ns user 
+  (:require [clojure.pprint :as pprint]))
 ;; Add your REPL customizations here.
 
 
@@ -16,3 +17,7 @@
   (when-let [orig (:trace/orig (meta v))]
     (alter-var-root v (constantly orig))
     (alter-meta! v dissoc :trace/orig)))
+
+
+(add-tap (bound-fn* pprint/pprint))
+(prn "---REPL tap configured---")
