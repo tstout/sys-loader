@@ -1,6 +1,8 @@
 {:deps {org.clojure/tools.cli             {:mvn/version "0.3.5"}
-        com.taoensso/timbre               {:mvn/version "5.1.2"}
-        com.github.seancorfield/next.jdbc {:mvn/version "1.2.674"}
+        com.taoensso/timbre               {:git/url "https://github.com/tstout/timbre.git"
+                                           :git/tag "v5.1.2t" :git/sha "fea330b"}
+        com.github.seancorfield/next.jdbc {:git/url "https://github.com/seancorfield/next-jdbc.git"
+                                           :git/tag "v1.2.724" :git/sha "de432a2"}
         com.h2database/h2                 {:mvn/version "1.4.199"}}
  :paths ["resources" "src"]
  :aliases
