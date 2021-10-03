@@ -1,5 +1,6 @@
 (ns sys-loader.db
-  (:require [next.jdbc :as jdbc])
+  (:require [next.jdbc :as jdbc]
+            [taoensso.timbre :as log])
   (:import [java.net InetAddress]
            [org.h2.tools Server]
            [org.h2.jdbcx JdbcConnectionPool]))
@@ -10,11 +11,12 @@
 (def jdbcUrls
   {:memory ""
    :server (str "jdbc:h2:tcp://"
-                (host-name)
+                "localhost"
                 "/~/.sys-loader/db/sys-loader;jmx=true")})
 
 ;; TODO - support non-default password
 (defn mk-datasource []
+  (log/infof "Creating data source for %s" (:server jdbcUrls))
   (JdbcConnectionPool/create (:server jdbcUrls) "sa" ""))
 
 (defn mk-h2-server
@@ -32,7 +34,11 @@
 
 (defn init [_]
   (let [server (mk-h2-server)]
-    (server :start)
+    (try
+      (server :start)
+      (log/info "DB started successfully")
+      (catch Exception e
+        (log/error e)))
     {:server server
      :data-source (mk-datasource)}))
 
