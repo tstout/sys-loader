@@ -17,7 +17,11 @@
    {:sys/description "Migrations"
     :sys/name :sys/migrations
     :sys/deps [:sys/db]
-    :sys/init 'sys-loader.migrations/init}])
+    :sys/init 'sys-loader.migrations/init}
+   {:sys/description "Prepl"
+    :sys/name :sys/prepl
+    :sys/deps [:sys/logging]
+    :sys/init 'sys-loader.prepl/init}])
 
 (defn load-plugin-cfg
   "Traverse the resources in the classpath, looking for plugin.edn files.
@@ -77,5 +81,10 @@
 
   (-> (load-plugin-cfg) build-deps)
   (flatten (conj [{:a 1}] [{:b 1} {:c 1}]))
+
+  (require '[kratzen.email :as email])
+  (email/send-daily-summary)
+
+
   ;;
   )

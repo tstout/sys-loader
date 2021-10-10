@@ -14,7 +14,7 @@
          :namespace ?ns-str
          :line      ?line
          :file      (-> ?file (split #"/") last)
-         :msg       (str (force msg_))}]
+         :msg       (force msg_)}]
     (with-open [conn (jdbc/get-connection db)]
       (sql/insert! conn :log entry))))
 
