@@ -1,4 +1,4 @@
-(ns user 
+(ns user
   (:require [clojure.pprint :as pprint]))
 ;; Add your REPL customizations here.
 
@@ -21,3 +21,6 @@
 
 (add-tap (bound-fn* pprint/pprint))
 (prn "---REPL tap configured---")
+
+(defn help []
+  (pprint/print-table [:field-one :field-two] [{:field-one 1 :field-two 2}]))

@@ -37,6 +37,7 @@
   (run-ddl "logging"))
 
 (defn init [state]
+  ;; TODO nested map destructuring might be slightly cleaner here.
   (let [db (-> :sys/db state :data-source)
         migrate (-> :sys/migrations state)]
     (migrate #'logging-ddl)

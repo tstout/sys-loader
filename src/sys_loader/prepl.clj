@@ -2,7 +2,10 @@
   (:require [clojure.core.server :refer [start-server]]
             [taoensso.timbre :as log]))
 
-(defn start-repl! [opts]
+(defn start-repl!
+  "Start a prepl server based on the specified options.
+   Returns the repl's server socket."
+  [opts]
   (log/infof "attempting to start prepl...")
   (let [{:keys [bind-addr port]} opts
         server (start-server {:accept 'clojure.core.server/io-prepl

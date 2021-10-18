@@ -4,7 +4,7 @@
         com.github.seancorfield/next.jdbc {:git/url "https://github.com/seancorfield/next-jdbc.git"
                                            :git/tag "v1.2.724" :git/sha "de432a2"}
         com.h2database/h2                 {:mvn/version "1.4.199"}}
- :paths ["resources" "src"]
+ :paths ["resources" "src" "dev"]
  :aliases
  {:sys-loader {:main-opts ["-m" "sys-loader.core"]}
   :dev {:extra-paths ["dev"]}
