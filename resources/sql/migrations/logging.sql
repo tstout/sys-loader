@@ -1,4 +1,4 @@
-create table if not exists LOG (
+create table if not exists sys_loader.log (
    id        int identity(1, 1) primary key not null
   ,instant   datetime not null
   ,level     varchar(32) not null

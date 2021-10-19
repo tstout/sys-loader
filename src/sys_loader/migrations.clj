@@ -29,14 +29,14 @@
 
 (defn run-and-record [conn migration]
   (migration (partial run-ddl conn))
-  (sql/insert! conn :migrations {:name (var-ns migration)
-                                 :created_at (Timestamp. (System/currentTimeMillis))}))
+  (sql/insert! conn :sys_loader.migrations {:name (var-ns migration)
+                                            :created_at (Timestamp. (System/currentTimeMillis))}))
 
 (defn migrate [conn & migrations]
   (run-ddl conn "intrinsic")
   (jdbc/with-transaction [db-conn conn]
-    (let [already-run? (->> (sql/query db-conn ["select name from migrations"])
-                            (map :MIGRATIONS/NAME)
+    (let [already-run? (->> (sql/query db-conn ["select name from sys_loader.migrations"])
+                            (map :SYS_LOADER.MIGRATIONS/NAME)
                             set)]
       (doseq [m migrations
               :when (not (already-run? (var-ns m)))]

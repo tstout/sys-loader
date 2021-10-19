@@ -16,7 +16,7 @@
          :file      (-> ?file (split #"/") last)
          :msg       (force msg_)}]
     (with-open [conn (jdbc/get-connection db)]
-      (sql/insert! conn :log entry))))
+      (sql/insert! conn :sys_loader.log entry))))
 
 (defn h2-appender [db]
   {:enabled?   true
