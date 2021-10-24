@@ -2,6 +2,7 @@
   (:require [next.jdbc :as jdbc]
             [next.jdbc.sql :as sql]
             [clojure.java.io :as io]
+            [taoensso.timbre :as log]
             [sys-loader.db :refer [mk-datasource]])
   (:import [java.sql Timestamp]))
 
@@ -9,6 +10,7 @@
   "Load a resource file representing a sql string. The resource file is expected 
    to have a path of sql/migrations and end with .sql"
   [res]
+  (log/infof "loading sql resource %s" res)
   (-> (str "sql/migrations/" res ".sql")
       io/resource
       slurp))
@@ -36,8 +38,9 @@
   (run-ddl conn "intrinsic")
   (jdbc/with-transaction [db-conn conn]
     (let [already-run? (->> (sql/query db-conn ["select name from sys_loader.migrations"])
-                            (map :SYS_LOADER.MIGRATIONS/NAME)
+                            (map :MIGRATIONS/NAME)
                             set)]
+      (log/infof "Already run: %s" already-run?)
       (doseq [m migrations
               :when (not (already-run? (var-ns m)))]
         (run-and-record db-conn m)))))
@@ -48,6 +51,9 @@
 
 (comment
   *e
+
+
+
   (def migrator (init {:sys/db {:data-source (mk-datasource)}}))
 
   (migrator :run-ddl "logging")
@@ -60,6 +66,7 @@
   (load-sql "intrinsic")
 
   (def ds (mk-datasource))
+  (sql/query ds ["select name from sys_loader.migrations"])
 
   (run-ddl ds "intrinsic")
 
