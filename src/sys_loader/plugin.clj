@@ -38,6 +38,9 @@
                     (conj output)))
         (-> intrinsics (conj output) flatten)))))
 
+(def plugin-cfg
+  (delay (load-plugin-cfg)))
+
 (defn load-plugin [plugin state]
   (let [{:keys [sys/description sys/init sys/name]} plugin]
     (log/infof "loading module: %s %s %s" name init description)
@@ -60,7 +63,7 @@
    The init function can return some state, which is merged into a map and successivley passed to 
    init functions. Returns the merged results from all init functions."
   []
-  (let [plugins (load-plugin-cfg)
+  (let [plugins @plugin-cfg
         deps (-> plugins
                  build-deps
                  order-deps)]
@@ -73,6 +76,7 @@
 
 (comment
   *e
+  @plugin-cfg
   intrinsics
   (load-plugin-cfg)
   (load-plugins-in-order!)
@@ -81,10 +85,6 @@
 
   (-> (load-plugin-cfg) build-deps)
   (flatten (conj [{:a 1}] [{:b 1} {:c 1}]))
-
-  (require '[kratzen.email :as email])
-  (email/send-daily-summary)
-
-
+  
   ;;
   )

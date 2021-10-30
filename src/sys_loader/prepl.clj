@@ -15,7 +15,7 @@
     (log/infof "Started prepl - %s:%d" bind-addr port)
     server))
 
-(defn init [state]
+(defn init [_]
   (start-repl! {:bind-addr "localhost" :port 8000}))
 
 
