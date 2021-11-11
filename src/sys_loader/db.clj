@@ -5,19 +5,26 @@
            [org.h2.tools Server]
            [org.h2.jdbcx JdbcConnectionPool]))
 
-(defn host-name []
-  (.. InetAddress getLocalHost getHostName))
+#_(defn host-name []
+    (.. InetAddress getLocalHost getHostName))
 
 (def jdbcUrls
-  {:memory ""
+  {:memory "jdbc:h2:mem:sys-loader;DB_CLOSE_DELAY=-1"
    :server (str "jdbc:h2:tcp://"
                 "localhost"
                 "/~/.sys-loader/db/sys-loader;jmx=true")})
 
 ;; TODO - support non-default password
-(defn mk-datasource []
-  (log/infof "Creating data source for %s" (:server jdbcUrls))
-  (JdbcConnectionPool/create (:server jdbcUrls) "sa" ""))
+(defn mk-datasource
+  "Create a datasource. With no arguments, assume server. For specific
+  control specify :server or :memory as argument."
+  ([]
+   (mk-datasource :server))
+  ([t]
+   {:pre [(keyword? t) (#{:memory :server} t)]}
+   (log/infof "Creating data source for %s" (t jdbcUrls))
+   (JdbcConnectionPool/create (t jdbcUrls) "sa" "")))
+
 
 (defn mk-h2-server
   "Create an H2 server on port 9092. Returns a function which accepts the operations
@@ -46,8 +53,9 @@
 (comment
   *e
   (def state (init {}))
+  (def mem-ds (mk-datasource :memory))
 
-  state
+  mem-ds
 
   ((-> :server state) :stop)
 

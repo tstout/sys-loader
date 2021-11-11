@@ -29,7 +29,7 @@
 (defn config-logging [db]
   (log/set-level! :debug)
   (log/merge-config! {:appenders {:h2 (h2-appender db)}
-                      :timestamp-opts {:pattern "yyyy-MM-dd HH:mm:ss.SS"}})
+                      #_:timestamp-opts #_{:pattern "yyyy-MM-dd HH:mm:ss.SS"}})
   (log/info "Logging Initialized"))
 
 

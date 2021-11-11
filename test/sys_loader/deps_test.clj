@@ -1,5 +1,6 @@
 (ns sys-loader.deps-test
   (:require [sys-loader.deps :refer [build-deps order-deps]]
+            [clojure.test :refer [run-tests]]
             [expectations.clojure.test :refer [defexpect expect]]))
 
 (def plugin-def [{:sys/description "example plugin"
@@ -20,3 +21,13 @@
   (expect
    [:service-a :loader]
    (-> plugin-def build-deps order-deps)))
+
+
+(comment
+  *e
+
+  (run-tests)
+  (building)
+  (ordering)
+  ;;
+  )
