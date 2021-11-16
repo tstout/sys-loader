@@ -3,9 +3,7 @@
             [sys-loader.migrations :as migrate]
             [clojure.test :refer [run-tests use-fixtures]]
             [sys-loader.db :refer [mk-datasource]]
-            [next.jdbc.sql :as sql]
-            [next.jdbc.datafy]
-            [clojure.datafy :as d]))
+            [next.jdbc.sql :as sql]))
 
 (def ^:dynamic *pool* nil)
 (def ^:dynamic *con* nil)
@@ -31,12 +29,24 @@
 (defn example-ddl [run-ddl]
   (run-ddl "users"))
 
-(defexpect migration-fn-var-is-persisted
+(defn tables []
+  (->> ["select * from information_schema.tables"]
+       (sql/query *con*)
+       (map #(select-keys % [:TABLES/TABLE_NAME :TABLES/TABLE_SCHEMA]))))
+
+(defn table [t-schema t-name]
+  (->>
+   (tables)
+   (filter #(= (:TABLES/TABLE_NAME %) t-name))
+   (filter #(= (:TABLES/TABLE_SCHEMA %) t-schema))))
+
+(defexpect tables-created-and-recorded
   (expect (fn? *migrate-fn*) true)
   (*migrate-fn* #'example-ddl)
   (expect '("sys-loader.migrations-test/example-ddl")
           (->> (sql/query *con* ["select name from sys_loader.migrations"])
-               (map :MIGRATIONS/NAME))))
+               (map :MIGRATIONS/NAME)))
+  (expect not-empty (table "SYS_LOADER_TEST" "USERS")))
 
 
 (comment
@@ -44,32 +54,18 @@
   *e
   (run-tests)
 
-
   (def ds (mk-datasource :memory))
+
 
   (def tables
     (with-open [conn (.getConnection ds)]
       (sql/query conn ["select * from information_schema.tables"])))
 
-
   tables
 
-  (def db-meta
-    (let [conn (.getConnection ds)]
-      (.getMetaData conn)))
+  (-> tables first keys)
 
-  (.getCatlog db-meta)
-
-  (bean db-meta)
-
-  (= [1 2] '(1 2))
-  
-  (type db-meta)
-  (d/datafy db-meta)
-
-  (:all-tables (d/datafy db-meta))
-  db-meta
-  (sql/query ds ["select name from sys_loader.migrations"])
+  (map #(select-keys % [:TABLES/TABLE_NAME :TABLES/TABLE_SCHEMA]) tables)
 
   ;;
   )
