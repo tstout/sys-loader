@@ -5,9 +5,9 @@
             [sys-loader.db :refer [mk-datasource]]
             [next.jdbc.sql :as sql]))
 
-(def ^:dynamic *pool* nil)
-(def ^:dynamic *con* nil)
-(def ^:dynamic *migrate-fn* nil)
+(def ^:dynamic *pool*)
+(def ^:dynamic *con*)
+(def ^:dynamic *migrate-fn*)
 
 (defn pool-setup [work]
   (let [pool (mk-datasource :memory)
