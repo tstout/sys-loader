@@ -2,7 +2,9 @@
   (:require [clojure.edn :as edn]
             [clojure.string :refer [split]]
             [taoensso.timbre :as log]
-            [sys-loader.deps :refer [order-deps build-deps]]))
+            [sys-loader.deps :refer [order-deps build-deps]]
+            [sys-loader.plugin-spec]
+            [clojure.spec.alpha :as s]))
 
 (def intrinsics
   "Define plugins that are baked-in to sys-loader"
@@ -38,10 +40,21 @@
                     (conj output)))
         (-> intrinsics (conj output) flatten)))))
 
+;; TODO - make this reloadable...maybe using compare-and-set! with an atom
 (def plugin-cfg
-  (delay (load-plugin-cfg)))
+  "A delay containing the aggregate plugin configurations obtained from the classpath.
+   Configurations are validated against the spec :sys/plugin. Any invalid configurations are
+   logged and ignored."
+  (delay
+   (let [[valid invalid] (split-with #(s/valid? :sys/plugin %) (load-plugin-cfg))]
+     (doseq [interloper invalid]
+       (log/errorf "Invalid plugin config: %s" (s/explain-str :sys/plugin interloper)))
+     valid)))
 
-(defn load-plugin [plugin state]
+(defn load-plugin
+  "Given a plugin map (as defined in the spec :sys/plugin), load the plugin and invoke its
+   init function passing it the current system state."
+  [plugin state]
   (let [{:keys [sys/description sys/init sys/name]} plugin]
     (log/infof "loading module: %s %s %s" name init description)
     (-> init
@@ -73,7 +86,6 @@
             {}
             deps)))
 
-
 (comment
   *e
   @plugin-cfg
@@ -85,6 +97,18 @@
 
   (-> (load-plugin-cfg) build-deps)
   (flatten (conj [{:a 1}] [{:b 1} {:c 1}]))
-  
+
+  (split-with #(s/valid? :sys/plugin %) intrinsics)
+
+  (s/explain-data :sys/plugin {:sys/description "Migrations"
+                               :sys/name :sys/migrations
+                               :sys/deps [""]
+                               :sys/init 'sys-loader.migrations/init})
+
+  (s/explain-str :sys/plugin {:sys/description "Migrations"
+                              :sys/name :sys/migrations
+                              :sys/deps [""]
+                              :sys/init 'sys-loader.migrations/init})
+
   ;;
   )
