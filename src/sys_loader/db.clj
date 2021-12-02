@@ -29,7 +29,10 @@
 
 (defn mk-h2-server
   "Create an H2 server on port 9092. Returns a function which accepts the operations
-  :start and :stop"
+  :start  (start server listening on TCP port)
+  :stop   (stop the server from listening)
+  :server (return the underlying java server object)
+  :info   (return a map of server details)"
   []
   (let
    [server (->
@@ -37,7 +40,9 @@
             (into-array String ["-tcpAllowOthers" "-ifNotExists"])
             Server/createTcpServer)
     server-ops {:start (fn [] (.start server))
-                :stop  (fn [] (.stop server))}]
+                :stop  (fn [] (.stop server))
+                :server (fn [] server)
+                :info (fn [] (bean server))}]
     (fn [operation & args] (-> (server-ops operation) (apply args)))))
 
 (defn init [_]
@@ -63,6 +68,9 @@
   (def server (mk-h2-server))
   (server :start)
   (server :stop)
+
+  (server :info)
+  server
 
   (def ds (mk-datasource))
 

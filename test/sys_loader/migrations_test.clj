@@ -9,6 +9,7 @@
 (def ^:dynamic *con*)
 (def ^:dynamic *migrate-fn*)
 
+;; TODO - get rid of let statement here
 (defn pool-setup [work]
   (let [pool (mk-datasource :memory)
         migrate-fn (migrate/init {:sys/db {:data-source pool}})]
@@ -40,6 +41,7 @@
    (filter #(= (:TABLES/TABLE_NAME %) t-name))
    (filter #(= (:TABLES/TABLE_SCHEMA %) t-schema))))
 
+#_{:clj-kondo/ignore [:unresolved-symbol]}
 (defexpect tables-created-and-recorded
   (expect (fn? *migrate-fn*) true)
   (*migrate-fn* #'example-ddl)
@@ -47,7 +49,6 @@
           (->> (sql/query *con* ["select name from sys_loader.migrations"])
                (map :MIGRATIONS/NAME)))
   (expect not-empty (table "SYS_LOADER_TEST" "USERS")))
-
 
 (comment
   #_(run-tests 'sys-loader.migrations-test)
