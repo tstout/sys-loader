@@ -9,7 +9,6 @@
 (def ^:dynamic *con*)
 (def ^:dynamic *migrate-fn*)
 
-;; TODO - get rid of let statement here
 (defn pool-setup [work]
   (let [pool (mk-datasource :memory)
         migrate-fn (migrate/init {:sys/db {:data-source pool}})]

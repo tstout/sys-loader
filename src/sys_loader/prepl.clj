@@ -1,5 +1,5 @@
 (ns sys-loader.prepl
-  (:require [clojure.core.server :refer [start-server]]
+  (:require [clojure.core.server :refer [start-server stop-server stop-servers]]
             [taoensso.timbre :as log]))
 
 (defn start-repl!
@@ -15,12 +15,36 @@
     (log/infof "Started prepl - %s:%d" bind-addr port)
     server))
 
+(defn mk-repl
+  "Create a prepl server which can be started and stopped.
+   Returns a function which accepts the operations
+   :start
+   :stop
+   :state"
+  [opts]
+  (let [server-sock (atom nil)
+        repl-ops {:start (fn []
+                           (when @server-sock (stop-servers))
+                           (reset! server-sock (start-repl! opts)))
+                  :stop (fn [] (when @server-sock
+                                 (stop-servers)
+                                 (reset! server-sock nil)))
+                  :state (fn [] (if @server-sock :running :idle))}]
+    (fn [operation]
+      {:pre [(#{:start :stop :state} operation)]}
+      ((-> operation repl-ops)))))
+
+
 (defn init [_]
-  (start-repl! {:bind-addr "localhost" :port 8000}))
-
-
+  #_(start-repl! {:bind-addr "localhost" :port 8000})
+  (let [repl-fn (mk-repl {:bind-addr "localhost" :port 8000})]
+    (repl-fn :start)
+    repl-fn))
 
 (comment
-  (init {})
+  (def repl (init {}))
+  (repl :state)
+  (repl :start)
+  (repl :stop)
   ;;
   )
