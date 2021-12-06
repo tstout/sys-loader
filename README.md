@@ -9,28 +9,22 @@ clj -M:sys-loader:service-1:service-2:service-n
 This composition of dependencies is a tenet of cli-deps. Simple, powerful, interesting. The clojure way. The term service here is abstract. It is not meant to imply a web service accepting http requests. It could be this, but not necessarily. Each dependency listed after the sys-loader alias given above, contains a plugin.edn resource file containing the init function needed to initialize the component. The EDN file can also contain a list of dependencies. The sys-loader implementation will do a topological sort to invoke the init functions in the appropriate order. 
 The cli-deps tooling can be combined with other compatible tools such as [depstar](https://github.com/seancorfield/depstar) to create uberjars for convenient deployment which does not require cli-deps
 at runtime.
-## IPC
-A socket API may evolve to send control and status requests to the sys-loader jvm. However, for starters, a simpler memory-mapped file supported by NIO is likely sufficient. This will support A CLI to send commands to the loader. A CLI will be the primary user interface. Spinning up a webserver to provide a UI might be a little heavy-weight.
-
-A REPL connection could suffice for this functionality as well. nRepl is nice, but perhaps initially prepl (built-in) should be used to avoid dependencies. Look here for more info: https://oli.me.uk/clojure-socket-prepl-cookbook/
+## REPL
+A [prepl](https://clojuredocs.org/clojure.core.server/prepl) server is started on port 8000. nRepl is nice, but perhaps initially prepl (built-in) should be used to avoid dependencies. Look here for more info: https://oli.me.uk/clojure-socket-prepl-cookbook/
 
 ## Lifecycle
 Lifecycles for a plugin could be useful. More thought is needed on this. Restarting the entire process is likely good enough for now. Supporting a lifecycle can complicate things. 
 
 ## Logging
-Leaning towards [timbre](https://github.com/ptaoussanis/timbre). Storing logs in a DB is useful. By default logs will be written to H2.
+Leaning towards [timbre](https://github.com/ptaoussanis/timbre). Storing logs in a database is useful. By default logs are written to an H2 database.
+
+## Database
+An H2 server is provided. 
+Most apps/services I have in mind will need several modules/plugins: DB, Logging, pub/sub,  and scheduling. Consider supporting command line options to sys-loader to exclude baked-in modules/plugins from being loaded. The exclusion options are probably not needed. If the module is not listed in any dependency, then it won’t be started.
+
+# TODO 
 ## Monitoring
 Is JMX sufficient for the beginning? Save this for nice to have, but not necessary.
 
-## Configuration
-H2 Server will provide access to per module/plugin configuration. Each module/plugin will have an EDN blob. Each module’s config will be loaded at startup, and provided to the module's init function. This will allow config editing using any SQL client. Functions can also be provided via REPL to update configuration. No hot-reload in the beginning. A module/plugin’s init function can return a map containing any resource handles that might be needed by its dependents. The configuration provided to the init function will be enriched with any dependent handle information, such as DB connections. Plugin/module edn config file can contain an optional map of configuration items. This will be used to seed the initial values stored in the DB.
-_Update_ Upong further reflection, leave config out of this for now.
-
-Storing config in git repo might be useful here as well?
-
 ## Scheduling
 Consider providing a standard scheduler perhaps based on chime. This has been working well for years now in [fin-kratzen](https://github.com/tstout/fin-kratzen).
-
-## Database
-An H2 server is provided. Currently used to store logs. 
-Most apps/services I have in mind will need several modules/plugins: DB, Logging, pub/sub,  and scheduling. Consider supporting command line options to sys-loader to exclude baked-in modules/plugins from being loaded. The exclusion options are probably not needed. If the module is not listed in any dependency, then it won’t be started.
