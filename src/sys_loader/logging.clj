@@ -41,7 +41,8 @@
   (let [db (-> :sys/db state :data-source)
         migrate (-> :sys/migrations state)]
     (migrate #'logging-ddl)
-    (config-logging db)))
+    (config-logging db)
+    #()))
 
 (comment
   *e

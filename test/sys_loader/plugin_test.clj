@@ -3,7 +3,7 @@
                                        load-plugins-in-order!
                                        plugin-cfg]]
             [clojure.test :refer [run-tests use-fixtures]]
-            [expectations.clojure.test :refer [defexpect expect]]))
+            [expectations.clojure.test :refer [defexpect expect more-of more]]))
 
 (def ^:dynamic *system*)
 
@@ -13,18 +13,23 @@
       (binding [*system* system]
         (work))
       (finally
-        ((-> :sys/db system :server) :stop)))))
+        ((-> :sys/db system :server) :stop)
+        ((-> :sys/prepl system) :stop)))))
 
 (use-fixtures :once with-system)
 
 #_{:clj-kondo/ignore [:unresolved-symbol]}
-(defexpect creates-and-starts-plugins
-  (expect (map? *system*))
-  #_(expect (more-of {:keys [:sys/db]}
-                     map? sys/db)
-            *system*))
+(defexpect creates-intrinsic-plugins
+  (expect (more-of state
+                   map? state
+                   (> (count state) 0)
+                   (every? state #{:sys/db
+                                   :sys/prepl
+                                   :sys/migrations
+                                   :sys/logging}))
+          *system*))
 
-
+`
 (comment
   *e
   *system*

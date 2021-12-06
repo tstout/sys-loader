@@ -50,9 +50,6 @@
     (partial migrate db)))
 
 (comment
-  *1
-  *2
-  *3
   *e
   (def migrator (init {:sys/db {:data-source (mk-datasource)}}))
 

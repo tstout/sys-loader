@@ -1,5 +1,5 @@
 (ns sys-loader.prepl
-  (:require [clojure.core.server :refer [start-server stop-server stop-servers]]
+  (:require [clojure.core.server :refer [start-server stop-servers]]
             [taoensso.timbre :as log]))
 
 (defn start-repl!
@@ -42,9 +42,11 @@
     repl-fn))
 
 (comment
+  *e
   (def repl (init {}))
   (repl :state)
   (repl :start)
   (repl :stop)
+  (repl :foo)
   ;;
   )
