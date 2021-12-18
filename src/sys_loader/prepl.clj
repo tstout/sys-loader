@@ -1,6 +1,10 @@
 (ns sys-loader.prepl
-  (:require [clojure.core.server :refer [start-server stop-servers]]
+  (:require [clojure.core.server :refer [start-server stop-servers io-prepl]]
             [taoensso.timbre :as log]))
+
+(defn repl-io [& args]
+  ;; TODO - determine how to write custom message to prepl client.
+  (apply io-prepl args))
 
 (defn start-repl!
   "Start a prepl server based on the specified options.
@@ -8,7 +12,8 @@
   [opts]
   (log/infof "attempting to start prepl...")
   (let [{:keys [bind-addr port]} opts
-        server (start-server {:accept 'clojure.core.server/io-prepl
+        server (start-server {:accept 'sys-loader.prepl/repl-io
+                              ;;:accept 'clojure.core.server/io-prepl
                               :address bind-addr
                               :port port
                               :name "jvm"})]
@@ -48,5 +53,13 @@
   (repl :start)
   (repl :stop)
   (repl :foo)
+
+
+  (flatten '({:a [1 2 3] :d {:d 1}} {:b 2}))
+
+  (for [[k v] '({:a 1} {:b 2})]
+    k)
+
+
   ;;
   )
