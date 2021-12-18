@@ -29,10 +29,13 @@
                                    :sys/logging}))
           *system*))
 
-`
+
 (comment
   *e
   *system*
   (run-tests)
+
+  (map #(for [[k v] %] {k (inc v)}) '({:a 2} {:a 3}))
+
   ;;
   )

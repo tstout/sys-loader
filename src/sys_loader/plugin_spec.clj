@@ -23,6 +23,7 @@
 
 (comment
   *e
+  (s/describe :sys/plugin)
   (s/valid? :sys/description 1)
   (s/explain-data :sys/deps [:a "s"])
   (s/explain :sys/deps [:a "s"])
