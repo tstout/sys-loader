@@ -1,9 +1,9 @@
 [{:sys/description "example plugin-1"
-  :sys/name :sys/plugin-1
+  :sys/name :sys/module-1
   :sys/deps [:service-a :service-b]
   :sys/init sys-loader.core-test/init1}
  {:sys/description "example plugin-2"
-  :sys/name :sys/plugin-2
+  :sys/name :sys/module-2
   :sys/init sys-loader.core-test/init2
   :sys/deps []}
  {:sys/description "example service a"

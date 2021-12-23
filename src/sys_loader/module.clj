@@ -25,7 +25,7 @@
     :sys/deps [:sys/logging]
     :sys/init 'sys-loader.prepl/init}])
 
-(defn load-plugin-cfg
+(defn load-module-cfg
   "Traverse the resources in the classpath, looking for module.edn files.
    Returns a sequence of all module definitions found."
   []
@@ -41,17 +41,17 @@
         (-> intrinsics (conj output) flatten)))))
 
 ;; TODO - make this reloadable...maybe using compare-and-set! with an atom
-(def plugin-cfg
+(def module-cfg
   "A delay containing the aggregate module configurations obtained from the classpath.
    Configurations are validated against the spec :sys/module. Any invalid configurations are
    logged and ignored."
   (delay
-   (let [[valid invalid] (split-with #(s/valid? :sys/module %) (load-plugin-cfg))]
+   (let [[valid invalid] (split-with #(s/valid? :sys/module %) (load-module-cfg))]
      (doseq [interloper invalid]
        (log/errorf "Invalid module config: %s" (s/explain-str :sys/module interloper)))
      valid)))
 
-(defn load-plugin
+(defn load-module
   "Given a module map (as defined in the spec :sys/module), load the module and invoke its
    init function passing it the current system state."
   [module state]
@@ -70,32 +70,32 @@
        (filter #(= name (:sys/name %)))
        first))
 
-(defn load-plugins-in-order!
+(defn load-modules-in-order!
   "Search the classpath for resources files named module.edn. For each module configuration found,
    Invoke the init function in the appropriate order as specified by any dependencies listed.
    The init function can return some state, which is merged into a map and successivley passed to 
    init functions. Returns the merged results from all init functions."
   []
-  (let [modules @plugin-cfg
+  (let [modules @module-cfg
         deps (-> modules
                  build-deps
                  order-deps)]
     (reduce (fn [accum module-name]
               (let [cfg (find-by-name module-name modules)]
-                (merge accum {module-name (load-plugin cfg accum)})))
+                (merge accum {module-name (load-module cfg accum)})))
             {}
             deps)))
 
 (comment
   *e
-  @plugin-cfg
+  @module-cfg
   intrinsics
-  (load-plugin-cfg)
-  (load-plugins-in-order!)
+  (load-module-cfg)
+  (load-modules-in-order!)
 
-  (def deps (-> (load-plugin-cfg) build-deps order-deps))
+  (def deps (-> (load-module-cfg) build-deps order-deps))
 
-  (-> (load-plugin-cfg) build-deps)
+  (-> (load-module-cfg) build-deps)
   (flatten (conj [{:a 1}] [{:b 1} {:c 1}]))
 
   (split-with #(s/valid? :sys/plugin %) intrinsics)
