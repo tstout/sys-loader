@@ -5,11 +5,11 @@
             [clojure.repl :refer [dir source doc]]))
 
 (defn ls
-  "Print a listing of all the loaded plugins."
+  "Print a listing of all the loaded modules."
   []
   (pprint/print-table
    [:plugin :description]
-   (map (fn [x] {:plugin x
+   (map (fn [x] {:module x
                  :description
                  (-> (filter #(= x (:sys/name %)) @plugin-cfg)
                      first
@@ -19,7 +19,7 @@
 (defn loader
   "Execute a sys-loader command corresponding to the specified op.
    Supported ops:
-   :ls       - list all loaded plugins
+   :ls       - list all loaded modules
    :version  - show sys-loader version"
   [op]
   (case op

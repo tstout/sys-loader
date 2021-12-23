@@ -35,11 +35,11 @@
    (apply merge)))
 
 (comment
-  (def p-def [{:sys/description "example plugin"
+  (def p-def [{:sys/description "example module"
                :sys/name :loader
                :sys/deps [:service-a]
                :sys/init 'sys-loader.core-test/init}
-              {:sys/description "example plugin2"
+              {:sys/description "example module2"
                :sys/name :service-a
                :sys/deps []
                :sys/init 'sys-loader.core-test/init}

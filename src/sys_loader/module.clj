@@ -7,7 +7,7 @@
             [clojure.spec.alpha :as s]))
 
 (def intrinsics
-  "Define plugins that are baked-in to sys-loader"
+  "Define modules that are baked-in to sys-loader"
   [{:sys/description "Database"
     :sys/name :sys/db
     :sys/deps []
@@ -26,15 +26,15 @@
     :sys/init 'sys-loader.prepl/init}])
 
 (defn load-plugin-cfg
-  "Traverse the resources in the classpath, looking for plugin.edn files.
-   Returns a sequence of all plugin definitions found."
+  "Traverse the resources in the classpath, looking for module.edn files.
+   Returns a sequence of all module definitions found."
   []
-  (let [plugins (.getResources (ClassLoader/getSystemClassLoader) "plugin.edn")]
+  (let [modules (.getResources (ClassLoader/getSystemClassLoader) "module.edn")]
     (loop [output []]
-      (if (.hasMoreElements plugins)
+      (if (.hasMoreElements modules)
         #_(recur (conj output (edn/read-string (slurp (.. plugins nextElement openStream)))))
         ;; TODO - is this a resource leak here?
-        (recur (->> (.. plugins nextElement openStream)
+        (recur (->> (.. modules nextElement openStream)
                     slurp
                     edn/read-string
                     (conj output)))
@@ -42,20 +42,20 @@
 
 ;; TODO - make this reloadable...maybe using compare-and-set! with an atom
 (def plugin-cfg
-  "A delay containing the aggregate plugin configurations obtained from the classpath.
-   Configurations are validated against the spec :sys/plugin. Any invalid configurations are
+  "A delay containing the aggregate module configurations obtained from the classpath.
+   Configurations are validated against the spec :sys/module. Any invalid configurations are
    logged and ignored."
   (delay
-   (let [[valid invalid] (split-with #(s/valid? :sys/plugin %) (load-plugin-cfg))]
+   (let [[valid invalid] (split-with #(s/valid? :sys/module %) (load-plugin-cfg))]
      (doseq [interloper invalid]
-       (log/errorf "Invalid plugin config: %s" (s/explain-str :sys/plugin interloper)))
+       (log/errorf "Invalid module config: %s" (s/explain-str :sys/module interloper)))
      valid)))
 
 (defn load-plugin
-  "Given a plugin map (as defined in the spec :sys/plugin), load the plugin and invoke its
+  "Given a module map (as defined in the spec :sys/module), load the module and invoke its
    init function passing it the current system state."
-  [plugin state]
-  (let [{:keys [sys/description sys/init sys/name]} plugin]
+  [module state]
+  (let [{:keys [sys/description sys/init sys/name]} module]
     (log/infof "loading module: %s %s %s" name init description)
     (-> init
         str
@@ -65,24 +65,24 @@
         require)
     ((resolve init) state)))
 
-(defn find-by-name [name plugins]
-  (->> plugins
+(defn find-by-name [name modules]
+  (->> modules
        (filter #(= name (:sys/name %)))
        first))
 
 (defn load-plugins-in-order!
-  "Search the classpath for resources files named plugin.edn. For each plugin configuration found,
+  "Search the classpath for resources files named module.edn. For each module configuration found,
    Invoke the init function in the appropriate order as specified by any dependencies listed.
    The init function can return some state, which is merged into a map and successivley passed to 
    init functions. Returns the merged results from all init functions."
   []
-  (let [plugins @plugin-cfg
-        deps (-> plugins
+  (let [modules @plugin-cfg
+        deps (-> modules
                  build-deps
                  order-deps)]
-    (reduce (fn [accum plugin-name]
-              (let [cfg (find-by-name plugin-name plugins)]
-                (merge accum {plugin-name (load-plugin cfg accum)})))
+    (reduce (fn [accum module-name]
+              (let [cfg (find-by-name module-name modules)]
+                (merge accum {module-name (load-plugin cfg accum)})))
             {}
             deps)))
 

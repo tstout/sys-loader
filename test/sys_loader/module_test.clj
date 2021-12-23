@@ -19,7 +19,7 @@
 (use-fixtures :once with-system)
 
 #_{:clj-kondo/ignore [:unresolved-symbol]}
-(defexpect creates-intrinsic-plugins
+(defexpect creates-intrinsic-modules
   (expect (more-of state
                    map? state
                    (> (count state) 0)
