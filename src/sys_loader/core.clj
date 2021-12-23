@@ -3,7 +3,7 @@
             [taoensso.timbre :as log]
             [clojure.java.io :as io]
             [clojure.edn :as edn]
-            [sys-loader.plugin :refer [load-plugins-in-order!]])
+            [sys-loader.module :refer [load-plugins-in-order!]])
   (:import [java.time Instant Duration]))
 
 (def version-str

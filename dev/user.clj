@@ -1,7 +1,7 @@
 (ns user
   (:require [clojure.pprint :as pprint]
             [sys-loader.core :refer [sys-state version-str]]
-            [sys-loader.plugin :refer [plugin-cfg]]
+            [sys-loader.module :refer [plugin-cfg]]
             [clojure.repl :refer [dir source doc]]))
 
 ;; Trace fns borrowed from https://lambdaisland.com/blog/2019-12-17-advent-of-parens-17-trace-untrace

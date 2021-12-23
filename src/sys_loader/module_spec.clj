@@ -1,4 +1,4 @@
-(ns sys-loader.plugin-spec
+(ns sys-loader.module-spec
   "Define specs for a plugin definition.
    
    Here is an example plugin def:

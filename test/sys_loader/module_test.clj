@@ -1,5 +1,5 @@
-(ns sys-loader.plugin-test
-  (:require [sys-loader.plugin :refer [load-plugin-cfg
+(ns sys-loader.module-test
+  (:require [sys-loader.module :refer [load-plugin-cfg
                                        load-plugins-in-order!
                                        plugin-cfg]]
             [clojure.test :refer [run-tests use-fixtures]]

@@ -1,9 +1,9 @@
-(ns sys-loader.plugin
+(ns sys-loader.module
   (:require [clojure.edn :as edn]
             [clojure.string :refer [split]]
             [taoensso.timbre :as log]
             [sys-loader.deps :refer [order-deps build-deps]]
-            [sys-loader.plugin-spec]
+            [sys-loader.module-spec]
             [clojure.spec.alpha :as s]))
 
 (def intrinsics

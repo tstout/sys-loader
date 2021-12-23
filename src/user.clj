@@ -1,7 +1,7 @@
 (ns user
   (:require [clojure.pprint :as pprint]
             [sys-loader.core :refer [sys-state version-str]]
-            [sys-loader.plugin :refer [plugin-cfg]]
+            [sys-loader.module :refer [plugin-cfg]]
             [clojure.repl :refer [dir source doc]]))
 
 (defn ls
