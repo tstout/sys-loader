@@ -1,14 +1,14 @@
-(ns sys-loader.plugin-test
-  (:require [sys-loader.plugin :refer [load-plugin-cfg
-                                       load-plugins-in-order!
-                                       plugin-cfg]]
+(ns sys-loader.module-test
+  (:require [sys-loader.module :refer [load-module-cfg
+                                       load-modules-in-order!
+                                       module-cfg]]
             [clojure.test :refer [run-tests use-fixtures]]
             [expectations.clojure.test :refer [defexpect expect more-of more]]))
 
 (def ^:dynamic *system*)
 
 (defn with-system [work]
-  (let [system (load-plugins-in-order!)]
+  (let [system (load-modules-in-order!)]
     (try
       (binding [*system* system]
         (work))
@@ -19,7 +19,7 @@
 (use-fixtures :once with-system)
 
 #_{:clj-kondo/ignore [:unresolved-symbol]}
-(defexpect creates-intrinsic-plugins
+(defexpect creates-intrinsic-modules
   (expect (more-of state
                    map? state
                    (> (count state) 0)

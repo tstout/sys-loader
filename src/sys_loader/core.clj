@@ -3,7 +3,7 @@
             [taoensso.timbre :as log]
             [clojure.java.io :as io]
             [clojure.edn :as edn]
-            [sys-loader.plugin :refer [load-plugins-in-order!]])
+            [sys-loader.module :refer [load-modules-in-order!]])
   (:import [java.time Instant Duration]))
 
 (def version-str
@@ -20,10 +20,10 @@
       .toMillis))
 
 (def sys-state
-  "The state of the system. This is a map of all plugins that have been loaded.
-   The keys are the plugin's keyword name as defined in each plugin.edn file found
+  "The state of the system. This is a map of all modules that have been loaded.
+   The keys are the module's keyword name as defined in each module.edn file found
    on the classpath."
-  (delay (load-plugins-in-order!)))
+  (delay (load-modules-in-order!)))
 
 (defn -main [& args]
   (get-time :start)
@@ -41,7 +41,7 @@
   (get-time :bar)
 
 
-  (ns-publics (find-ns 'sys-loader.plugin))
+  (ns-publics (find-ns 'sys-loader.module))
 
   (t-diff-ms (get-time :foo) (get-time :bar))
 
