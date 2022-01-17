@@ -9,15 +9,17 @@ A sys-loader module is code stored in a maven or git repository.
 ## Design
 A module is defined by a module.edn file, typically made available on the classpath as a resource. The EDN file contains a namespace qualified init function and a vector of dependent modules, which are (required), then invoked. The cli-deps tooling makes building up the classpath and invoking configured functions simple. For example, 
 ```
-clojure -M:sys-loader -X:service-1:service-2:service-n
+clojure -M:sys-loader -A:service-1:service-2:service-n
 ```
 This composition of dependencies is a tenet of cli-deps. Simple, powerful, interesting. The term service here is abstract. It is not meant to imply a web service accepting http requests. It could be this, but not necessarily. Each dependency listed after the sys-loader alias given above, is assumed to contain a module.edn resource file containing the init function needed to initialize the module. The EDN file can also contain a list of dependencies. The sys-loader implementation will do a topological sort to invoke the init functions in the appropriate order. 
 The cli-deps tooling can be combined with other compatible tools such as [depstar](https://github.com/seancorfield/depstar) to create uberjars for convenient deployment which does not require cli-deps at runtime.
 
 An example module.edn file:
-```
-TODO
-
+```clojure
+[{:sys/description "ring module"
+  :sys/name        :ring-module
+  :sys/deps        [:sys/logging]
+  :sys/init        ring-module.core/init}]
 ```
 
 Sys-loader provides 

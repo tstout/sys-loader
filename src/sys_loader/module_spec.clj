@@ -28,6 +28,12 @@
   (s/explain-data :sys/deps [:a "s"])
   (s/explain :sys/deps [:a "s"])
 
+
+  (s/conform :sys/module {:sys/description "Database"
+                          :sys/name :sys/db
+                          :sys/deps []
+                          :sys/init 'sys-loader.db/init})
+
   (s/valid? :sys/module {:sys/description "Database"
                          :sys/name :sys/db
                          :sys/deps []

@@ -8,7 +8,8 @@
 
 (def version-str
   (delay (-> "sys-loader.edn"
-             io/resource slurp
+             io/resource 
+             slurp
              edn/read-string
              :version)))
 

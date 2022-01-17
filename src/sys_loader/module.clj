@@ -89,6 +89,9 @@
 (comment
   *e
   @module-cfg
+
+  (macroexpand '@module-cfg)
+
   intrinsics
   (load-module-cfg)
   (load-modules-in-order!)
