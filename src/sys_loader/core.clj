@@ -8,7 +8,7 @@
 
 (def version-str
   (delay (-> "sys-loader.edn"
-             io/resource 
+             io/resource
              slurp
              edn/read-string
              :version)))
@@ -31,7 +31,10 @@
   @sys-state
   (get-time :end)
   (log/infof "sys-loader started in %s ms" (t-diff-ms :start :end))
-  (log/info (-> "logo.txt" io/resource slurp (str @version-str))))
+  (log/info (-> "logo.txt"
+                io/resource
+                slurp
+                (str @version-str))))
 
 
 (comment

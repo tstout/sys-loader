@@ -1,5 +1,5 @@
 create table if not exists sys_loader.log (
-   id        int identity(1, 1) primary key not null
+   id        bigint auto_increment primary key not null
   ,instant   datetime not null
   ,level     varchar(32) not null
   ,namespace varchar(1000)
