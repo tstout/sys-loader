@@ -4,7 +4,8 @@
             [clojure.java.io :as io]
             [clojure.edn :as edn]
             [sys-loader.module :refer [load-modules-in-order!]])
-  (:import [java.time Instant Duration]))
+  (:import [java.time Instant Duration])
+  (:gen-class))
 
 (def version-str
   (delay (-> "sys-loader.edn"
