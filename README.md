@@ -26,15 +26,14 @@ Sys-loader provides
 ## REPL
 A [prepl](https://clojuredocs.org/clojure.core.server/prepl) server is started on port 8000. nRepl is nice, but perhaps initially prepl (built-in) should be used to avoid dependencies. Look here for more info: https://oli.me.uk/clojure-socket-prepl-cookbook/
 
-## Lifecycle
-Lifecycles for a plugin could be useful. More thought is needed on this. Restarting the entire process is likely good enough for now. Supporting a lifecycle can complicate things. 
-
 ## Logging
 Leaning towards [timbre](https://github.com/ptaoussanis/timbre). Storing logs in a database is useful. By default logs are written to an H2 database.
 
 ## Database
 An H2 server is provided. 
 Most apps/services I have in mind will need several modules/plugins: DB, Logging, pub/sub,  and scheduling. Consider supporting command line options to sys-loader to exclude baked-in modules/plugins from being loaded. The exclusion options are probably not needed. If the module is not listed in any dependency, then it won’t be started.
+
+## Database Migrations (forward only)
 
 # TODO 
 ## Monitoring
