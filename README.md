@@ -20,7 +20,7 @@ A module is defined by a module.edn file, typically made available on the classp
 clojure -M:sys-loader -A:service-1:service-2:service-n
 ```
 This composition of dependencies is a tenet of cli-deps. Simple, powerful, interesting. The term service here is abstract. It is not meant to imply a web service accepting http requests. It could be this, but not necessarily. Each dependency listed after the sys-loader alias given above, is assumed to contain a module.edn resource file containing the init function needed to initialize the module. The EDN file can also contain a list of dependencies. The sys-loader implementation will do a topological sort to invoke the init functions in the appropriate order. 
-The cli-deps tooling can be combined with other compatible tools such as [depstar](https://github.com/seancorfield/depstar) to create uberjars for convenient deployment which does not require cli-deps at runtime.
+The cli-deps tooling can create uberjars for convenient deployment which does not require cli-deps at runtime.
 
 An example module.edn file:
 ```clojure
