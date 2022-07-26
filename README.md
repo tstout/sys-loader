@@ -1,3 +1,11 @@
+# Usage - In deps.edn, add this to your :deps map:
+```clojure
+  com.github.tstout/sys-loader
+    {:git/url "https://github.com/tstout/sys-loader"
+     :git/tag "v1.1.1"
+     :git/sha "7e9baa3"}
+```
+
 # Overview
 Sys-loader is a tool for spinning up a system of modules written in clojure. In this context the
 definition of a module is: 
