@@ -1,4 +1,4 @@
-# Usage - deps.edn coordinates
+## Usage - deps.edn coordinates
 ```clojure
   com.github.tstout/sys-loader
     {:git/url "https://github.com/tstout/sys-loader"
