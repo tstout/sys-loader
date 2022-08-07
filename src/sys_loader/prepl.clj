@@ -42,7 +42,8 @@
 
 (defn init [_]
   #_(start-repl! {:bind-addr "localhost" :port 8000})
-  (let [repl-fn (mk-repl {:bind-addr "localhost" :port 8000})]
+  (let [repl-fn (mk-repl {:bind-addr (or (System/getenv "PREPL_BIND_ADDR") "localhost")
+                          :port      (or (System/getenv "PREPL_BIND_PORT") 8000)})]
     (repl-fn :start)
     repl-fn))
 
@@ -53,13 +54,5 @@
   (repl :start)
   (repl :stop)
   (repl :foo)
-
-
-  (flatten '({:a [1 2 3] :d {:d 1}} {:b 2}))
-
-  (for [[k v] '({:a 1} {:b 2})]
-    k)
-
-
   ;;
   )
