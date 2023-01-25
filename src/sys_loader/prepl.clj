@@ -1,6 +1,6 @@
 (ns sys-loader.prepl
   (:require [clojure.core.server :refer [start-server stop-servers io-prepl]]
-            [taoensso.timbre :as log]))
+            [clojure.tools.logging :as log]))
 
 (defn repl-io [& args]
   ;; TODO - determine how to write custom message to prepl client.

@@ -1,6 +1,6 @@
 (ns sys-loader.core
   (:require [clojure.tools.cli :refer [parse-opts]]
-            [taoensso.timbre :as log]
+            [clojure.tools.logging :as log]
             [clojure.java.io :as io]
             [clojure.edn :as edn]
             [sys-loader.module :refer [load-modules-in-order!]])

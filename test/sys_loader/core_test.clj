@@ -1,6 +1,6 @@
 (ns sys-loader.core-test
   (:require [clojure.test :refer [use-fixtures]]
-            [taoensso.timbre :as log]
+            [clojure.tools.logging :as log]
             [expectations.clojure.test :refer [defexpect
                                                expect expecting]]))
 

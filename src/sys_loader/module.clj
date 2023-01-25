@@ -1,7 +1,7 @@
 (ns sys-loader.module
   (:require [clojure.edn :as edn]
             [clojure.string :refer [split]]
-            [taoensso.timbre :as log]
+            [clojure.tools.logging :as log]
             [sys-loader.deps :refer [order-deps build-deps]]
             [sys-loader.module-spec]
             [clojure.spec.alpha :as s]))
@@ -40,16 +40,23 @@
                     (conj output)))
         (-> intrinsics (conj output) flatten)))))
 
+(defn prn-modules
+  "Print modules from class path. Intended for repl debugging of classpath issues."
+  []
+  (let [modules (.getResources (ClassLoader/getSystemClassLoader) "module.edn")]
+    (while (.hasMoreElements modules)
+      (prn (.. modules nextElement)))))
+
 ;; TODO - make this reloadable...maybe using compare-and-set! with an atom
 (def module-cfg
   "A delay containing the aggregate module configurations obtained from the classpath.
    Configurations are validated against the spec :sys/module. Any invalid configurations are
    logged and ignored."
   (delay
-   (let [[valid invalid] (split-with #(s/valid? :sys/module %) (load-module-cfg))]
-     (doseq [interloper invalid]
-       (log/errorf "Invalid module config: %s" (s/explain-str :sys/module interloper)))
-     valid)))
+    (let [[valid invalid] (split-with #(s/valid? :sys/module %) (load-module-cfg))]
+      (doseq [interloper invalid]
+        (log/errorf "Invalid module config: %s" (s/explain-str :sys/module interloper)))
+      valid)))
 
 (defn load-module
   "Given a module map (as defined in the spec :sys/module), load the module and invoke its
@@ -89,6 +96,8 @@
 (comment
   *e
   @module-cfg
+
+  (prn-modules)
 
   (macroexpand '@module-cfg)
 

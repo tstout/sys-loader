@@ -1,7 +1,7 @@
 (ns sys-loader.db
   "Relational DB Support"
   (:require [next.jdbc :as jdbc]
-            [taoensso.timbre :as log])
+            [clojure.tools.logging :as log])
   (:import [java.net InetAddress]
            [org.h2.tools Server]
            [org.h2.jdbcx JdbcConnectionPool]))
