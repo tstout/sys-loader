@@ -8,7 +8,7 @@
   "Print a listing of all the loaded modules."
   []
   (pprint/print-table
-   [:plugin :description]
+   [:module :description]
    (map (fn [x] {:module x
                  :description
                  (-> (filter #(= x (:sys/name %)) @module-cfg)
