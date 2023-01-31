@@ -4,10 +4,20 @@
         <Console name="STDOUT">
             <PatternLayout pattern="%d - %t - %p - %c - %m%n" />
         </Console>
+        <Jdbc name="databaseAppender" tableName="EVENT_LOGS">
+            <ConnectionFactory class="com.github.tstout.sysloader.H2ConnFactory" method="createDS" />
+            <Column name="ID" pattern="%u" />
+            <Column name="DATE_TIME" isEventTimestamp="true" />
+            <Column name="CLASS" pattern="%logger" />
+            <Column name="LEVEL" pattern="%level" />
+            <Column name="MESSAGE" pattern="%message" />
+            <Column name="EXCEPTION" pattern="%ex{full}" />
+        </Jdbc>
     </Appenders>
     <Loggers>
         <Root level="trace">
             <AppenderRef ref="STDOUT" />
+            <AppenderRef ref="databaseAppender" />
         </Root>
     </Loggers>
 </Configuration>

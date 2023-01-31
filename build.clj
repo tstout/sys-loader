@@ -1,7 +1,10 @@
 (ns build
   (:require [clojure.tools.build.api :as b]))
 
-(def lib 'my/lib1)
+;; https://clojure.org/guides/tools_build#_mixed_java_clojure_build
+
+
+(def lib 'sys-loader/connfactory)
 (def version (format "1.2.%s" (b/git-count-revs nil)))
 (def class-dir "target/classes")
 (def basis (b/create-basis {:project "deps.edn"}))

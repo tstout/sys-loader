@@ -4,7 +4,9 @@
             [clojure.java.io :as io]
             [clojure.edn :as edn]
             [sys-loader.module :refer [load-modules-in-order!]])
-  (:import [java.time Instant Duration])
+  (:import [java.time Instant Duration]
+           [com.github.tstout.sysloader H2ConnFactory
+            H2ConnFactory$Singleton])
   (:gen-class))
 
 (def version-str
@@ -27,6 +29,11 @@
    on the classpath."
   (delay (load-modules-in-order!)))
 
+(defn create-ds []
+  (->  @sys-state
+       :sys/db
+       :data-source))
+
 (defn -main [& args]
   (get-time :start)
   @sys-state
@@ -40,11 +47,19 @@
 
 (comment
   *e
+  (macroexpand '(->
+                 (@sys-state :sys/db)
+                 :data-source))
+
+
+  (create-ds)
+
   @version-str
   (-main [])
   (get-time :foo)
   (get-time :bar)
 
+  ;;H2ConnFactory$Singleton
 
   (ns-publics (find-ns 'sys-loader.module))
 

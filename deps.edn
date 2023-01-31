@@ -3,12 +3,16 @@
         com.github.seancorfield/next.jdbc {:git/url "https://github.com/seancorfield/next-jdbc.git"
                                            :git/tag "v1.2.724"
                                            :git/sha "de432a2"}
+        ;;sys-loader/h2appender {:local/root "java"}
 
         com.h2database/h2                   {:mvn/version "2.1.210"}
         org.apache.logging.log4j/log4j-api  {:mvn/version "2.19.0"}
         org.apache.logging.log4j/log4j-core {:mvn/version "2.19.0"}
         org.apache.logging.log4j/log4j-slf4j-impl {:mvn/version "2.19.0"}}
- :paths ["resources" "src" "dev"]
+ :paths ["resources" "src" "dev" "java" "target/classes"]
+ :deps/prep-lib {:alias :build
+                 :fn compile
+                 :ensure "target/classes"}
  :aliases
  {:sys-loader {:main-opts ["-m" "sys-loader.core"]}
   :dev {:extra-paths ["dev"]

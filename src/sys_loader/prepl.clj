@@ -29,6 +29,7 @@
   [opts]
   (let [server-sock (atom nil)
         repl-ops {:start (fn []
+                           (log/info "--- Start repl invoked ---")
                            (when @server-sock (stop-servers))
                            (reset! server-sock (start-repl! opts)))
                   :stop (fn [] (when @server-sock

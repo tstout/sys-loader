@@ -13,13 +13,6 @@
            [org.apache.logging.log4j.core.config Configurator]
            [org.apache.logging.log4j.core.config.builder.api ConfigurationBuilder ConfigurationBuilderFactory]))
 
-(defn mk-appender []
-  (proxy [AbstractAppender] ["H2Appender" nil nil]
-    (append [^LogEvent evt]
-      (prn (format "from appender>>>: %s" (.getFormattedMessage evt))))))
-
-
-
 (defn log-message [db data]
   (let [{:keys [instant level ?ns-str msg_ ?line ?file]} data
         entry
@@ -57,11 +50,15 @@
 (defn logging-ddl [run-ddl]
   (run-ddl "logging"))
 
+(defn log4j2-ddl [run-ddl]
+  (run-ddl "log4j2"))
+
 (defn init [state]
   ;; TODO nested map destructuring might be slightly cleaner here.
   (let [db (-> :sys/db state :data-source)
         migrate (-> :sys/migrations state)]
-    (migrate #'logging-ddl)
+    (migrate #'logging-ddl
+             #'log4j2-ddl)
     (config-logging db)
     #()))
 
