@@ -14,7 +14,7 @@
 (s/def :sys/deps (s/coll-of keyword?))
 (s/def :sys/init symbol?)
 
-(s/def :sys/module (s/keys :req [:sys/description
+(s/def :sys/module (s/keys :req [:sys/description 
                                  :sys/name
                                  :sys/deps
                                  :sys/init]))

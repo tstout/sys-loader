@@ -2,7 +2,7 @@
   (:require [next.jdbc :as jdbc]
             [next.jdbc.sql :as sql]
             [clojure.java.io :as io]
-            [taoensso.timbre :as log]
+            [clojure.tools.logging :as log]
             [sys-loader.db :refer [mk-datasource]])
   (:import [java.sql Timestamp]))
 

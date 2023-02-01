@@ -35,7 +35,7 @@ Sys-loader provides
 A [prepl](https://clojuredocs.org/clojure.core.server/prepl) server is started on port 8000. nRepl is nice, but perhaps initially prepl (built-in) should be used to avoid dependencies. Look here for more info: https://oli.me.uk/clojure-socket-prepl-cookbook/
 
 ## Logging
-Leaning towards [timbre](https://github.com/ptaoussanis/timbre). Storing logs in a database is useful. By default logs are written to an H2 database.
+Storing logs in a database is useful. By default logs are written to an H2 database. [tools.logging](https://github.com/clojure/tools.logging) with log4j2 provides the logging implementation.
 
 ## Database
 An H2 server is provided. 

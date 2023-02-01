@@ -1,7 +1,7 @@
 (ns sys-loader.db
   "Relational DB Support"
   (:require [next.jdbc :as jdbc]
-            [taoensso.timbre :as log])
+            [clojure.tools.logging :as log])
   (:import [java.net InetAddress]
            [org.h2.tools Server]
            [org.h2.jdbcx JdbcConnectionPool]))
@@ -23,7 +23,7 @@
    (mk-datasource :server))
   ([t]
    {:pre [(keyword? t) (#{:memory :server} t)]}
-   (log/infof "Creating data source for %s" (t jdbcUrls))
+   ;;(log/infof "Creating data source for %s" (t jdbcUrls))
    (JdbcConnectionPool/create (t jdbcUrls) "sa" "")))
 
 
@@ -49,7 +49,7 @@
   (let [server (mk-h2-server)]
     (try
       (server :start)
-      (log/info "DB started successfully")
+      ;;(log/info "DB started successfully")
       (catch Exception e
         (log/error e)))
     {:server server

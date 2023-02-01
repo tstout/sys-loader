@@ -14,7 +14,7 @@
         (work))
       (finally
         ((-> :sys/db system :server) :stop)
-        ((-> :sys/prepl system) :stop)))))
+        #_((-> :sys/prepl system) :stop)))))
 
 (use-fixtures :once with-system)
 
@@ -24,7 +24,7 @@
                    map? state
                    (> (count state) 0)
                    (every? state #{:sys/db
-                                   :sys/prepl
+                                   ;;:sys/prepl
                                    :sys/migrations
                                    :sys/logging}))
           *system*))

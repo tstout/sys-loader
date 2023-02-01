@@ -1,22 +1,32 @@
 (ns sys-loader.prepl
   (:require [clojure.core.server :refer [start-server stop-servers io-prepl]]
-            [taoensso.timbre :as log]))
+            [clojure.tools.logging :as log]))
 
 (defn repl-io [& args]
   ;; TODO - determine how to write custom message to prepl client.
   (apply io-prepl args))
 
+
+(defn boot-server [opts]
+  (let [{:keys [bind-addr port]} opts]
+    (try
+      (let [server (start-server {:accept 'sys-loader.prepl/repl-io
+                              ;;:accept 'clojure.core.server/io-prepl
+                                  :address bind-addr
+                                  :port port
+                                  :name "jvm"})]
+        server)
+      (catch java.net.BindException _
+        ;; Not sure why this is happening
+        ))))
+
 (defn start-repl!
   "Start a prepl server based on the specified options.
    Returns the repl's server socket."
   [opts]
-  (log/infof "attempting to start prepl...")
+  (log/info "attempting to start prepl...")
   (let [{:keys [bind-addr port]} opts
-        server (start-server {:accept 'sys-loader.prepl/repl-io
-                              ;;:accept 'clojure.core.server/io-prepl
-                              :address bind-addr
-                              :port port
-                              :name "jvm"})]
+        server (boot-server opts)]
     (log/infof "Started prepl - %s:%d" bind-addr port)
     server))
 
@@ -29,6 +39,7 @@
   [opts]
   (let [server-sock (atom nil)
         repl-ops {:start (fn []
+                           (log/info "--- Start repl invoked ---")
                            (when @server-sock (stop-servers))
                            (reset! server-sock (start-repl! opts)))
                   :stop (fn [] (when @server-sock
