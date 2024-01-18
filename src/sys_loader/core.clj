@@ -5,8 +5,8 @@
             [clojure.edn :as edn]
             [sys-loader.module :refer [load-modules-in-order!]])
   (:import [java.time Instant Duration]
-           [com.github.tstout.sysloader H2ConnFactory
-            H2ConnFactory$Singleton])
+           #_[com.github.tstout.sysloader H2ConnFactory
+              H2ConnFactory$Singleton])
   (:gen-class))
 
 (def version-str

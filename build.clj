@@ -14,9 +14,9 @@
   (b/delete {:path "target"}))
 
 (defn compile [_]
-  (b/javac {:src-dirs ["java"]
-            :class-dir class-dir
-            :basis basis
+  (b/javac {:src-dirs   ["java"]
+            :class-dir  class-dir
+            :basis      basis
             :javac-opts ["-source" "11" "-target" "11"]}))
 
 (defn jar [_]
@@ -26,7 +26,7 @@
                 :version version
                 :basis basis
                 :src-dirs ["src"]})
-  (b/copy-dir {:src-dirs ["src" "resources"]
+  (b/copy-dir {:src-dirs   ["src" "resources"]
                :target-dir class-dir})
   (b/jar {:class-dir class-dir
-          :jar-file jar-file}))
+          :jar-file  jar-file}))

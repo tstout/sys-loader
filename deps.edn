@@ -1,39 +1,30 @@
-{:deps {org.clojure/tools.cli             {:mvn/version "0.3.5"}
-        org.clojure/tools.logging         {:mvn/version "1.2.4"}
-        com.github.seancorfield/next.jdbc {:git/url "https://github.com/seancorfield/next-jdbc.git"
-                                           :git/tag "v1.2.724"
-                                           :git/sha "de432a2"}
+{:deps          {org.clojure/tools.cli                     {:mvn/version "0.3.5"}
+                 org.clojure/tools.logging                 {:mvn/version "1.2.4"}
+                 com.github.seancorfield/next.jdbc         {:git/url "https://github.com/seancorfield/next-jdbc.git"
+                                                            :git/tag "v1.2.724"
+                                                            :git/sha "de432a2"}
         ;;sys-loader/h2appender {:local/root "java"}
-
-        com.h2database/h2                   {:mvn/version "2.1.210"}
-        org.apache.logging.log4j/log4j-api  {:mvn/version "2.17.0"}
-        org.apache.logging.log4j/log4j-core {:mvn/version "2.17.0"}
-        org.apache.logging.log4j/log4j-slf4j-impl {:mvn/version "2.17.0"}}
- :paths ["resources" "src" "dev" "java" "target/classes"]
- :deps/prep-lib {:alias :build
-                 :fn compile
+                 
+                 com.h2database/h2                         {:mvn/version "2.1.210"}
+                 org.apache.logging.log4j/log4j-api        {:mvn/version "2.17.0"}
+                 org.apache.logging.log4j/log4j-core       {:mvn/version "2.17.0"}
+                 org.apache.logging.log4j/log4j-slf4j-impl {:mvn/version "2.17.0"}}
+ :paths         ["resources" "src" "dev" "java" "target/classes"]
+ :deps/prep-lib {:alias  :build
+                 :fn     compile
                  :ensure "target/classes"}
- :aliases
- {:sys-loader {:main-opts ["-m" "sys-loader.core"]}
-  :dev {:extra-paths ["dev"]
-        :extra-deps {org.clojure/test.check {:mvn/version "0.9.0"}}}
-  :build
-  {:deps        {org.clojure/tools.build  {:mvn/version "0.9.2"}}
-   :ns-default  build
-   :extra-paths ["resources"]}
-  :test
-  {:extra-paths ["test" "test/resources"]
-   :extra-deps
-   {expectations/clojure-test
-    {:git/url "https://github.com/clojure-expectations/clojure-test"
-     :sha "ea94caad53ad390f6485f0d32bdb022e89ab5a4b"}
-    pjstadig/humane-test-output
-    {:git/url "https://github.com/pjstadig/humane-test-output"
-     :sha "063ee9ff5adc5cf94ff7ab790ad6a80e6263ebc8"}}}
-  :runner
-  {:extra-deps
-   {com.cognitect/test-runner
-    {:git/url "https://github.com/cognitect-labs/test-runner.git"
-     :sha "209b64504cb3bd3b99ecfec7937b358a879f55c1"}}
-   :extra-paths ["test"]
-   :main-opts ["-m" "cognitect.test-runner" "-d" "test"]}}}
+ :aliases       {:sys-loader {:main-opts ["-m" "sys-loader.core"]}
+                 :dev        {:extra-paths ["dev"]
+                              :extra-deps  {org.clojure/test.check {:mvn/version "0.9.0"}}}
+                 :build      {:deps        {org.clojure/tools.build {:mvn/version "0.9.2"}}
+                              :ns-default  build
+                              :extra-paths ["resources"]}
+                 :test       {:extra-paths ["test" "test/resources"]
+                              :extra-deps  {expectations/clojure-test   {:git/url "https://github.com/clojure-expectations/clojure-test"
+                                                                         :sha     "ea94caad53ad390f6485f0d32bdb022e89ab5a4b"}
+                                            pjstadig/humane-test-output {:git/url "https://github.com/pjstadig/humane-test-output"
+                                                                         :sha     "063ee9ff5adc5cf94ff7ab790ad6a80e6263ebc8"}}}
+                 :runner     {:extra-deps  {com.cognitect/test-runner {:git/url "https://github.com/cognitect-labs/test-runner.git"
+                                                                       :sha     "209b64504cb3bd3b99ecfec7937b358a879f55c1"}}
+                              :extra-paths ["test"]
+                              :main-opts   ["-m" "cognitect.test-runner" "-d" "test"]}}}

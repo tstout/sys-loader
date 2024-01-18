@@ -39,10 +39,10 @@
             ;; TODO - revisit the -ifNotExists setting
             (into-array String ["-tcpAllowOthers" "-ifNotExists"])
             Server/createTcpServer)
-    server-ops {:start (fn [] (.start server))
-                :stop  (fn [] (.stop server))
+    server-ops {:start  (fn [] (.start server))
+                :stop   (fn [] (.stop server))
                 :server (fn [] server)
-                :info (fn [] (bean server))}]
+                :info   (fn [] (bean server))}]
     (fn [operation & args] (-> (server-ops operation) (apply args)))))
 
 (defn init [_]

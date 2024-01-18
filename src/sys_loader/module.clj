@@ -64,13 +64,16 @@
   [module state]
   (let [{:keys [sys/description sys/init sys/name]} module]
     (log/infof "loading module: %s %s %s" name init description)
-    (-> init
-        str
-        (split #"/")
-        first
-        symbol
-        require)
-    ((resolve init) state)))
+    (try
+      (-> init
+          str
+          (split #"/")
+          first
+          symbol
+          require)
+      ((resolve init) state)
+      (catch Exception e
+        (log/error e)))))
 
 (defn find-by-name [name modules]
   (->> modules
