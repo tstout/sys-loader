@@ -26,6 +26,7 @@
    ;;(log/infof "Creating data source for %s" (t jdbcUrls))
    (JdbcConnectionPool/create (t jdbcUrls) "sa" "")))
 
+;;(def memo-mk-datasource (memoize mk-datasource))
 
 (defn mk-h2-server
   "Create an H2 server on port 9092. Returns a function which accepts the operations
@@ -48,6 +49,7 @@
 (defn init [_]
   (let [server (mk-h2-server)]
     (try
+      (prn ">>>>>DB INIT!<<<<<<")
       (server :start)
       ;;(log/info "DB started successfully")
       (catch Exception e

@@ -8,17 +8,17 @@
 
 (def intrinsics
   "Define modules that are baked-in to sys-loader"
-  [{:sys/description "Database"
+  [#_{:sys/description "Database"
     :sys/name :sys/db
     :sys/deps []
     :sys/init 'sys-loader.db/init}
    {:sys/description "Logging"
     :sys/name :sys/logging
-    :sys/deps [:sys/db :sys/migrations]
+    :sys/deps [:sys/migrations]
     :sys/init 'sys-loader.logging/init}
    {:sys/description "Migrations"
     :sys/name :sys/migrations
-    :sys/deps [:sys/db]
+    :sys/deps []
     :sys/init 'sys-loader.migrations/init}
    {:sys/description "Prepl"
     :sys/name :sys/prepl
@@ -45,7 +45,7 @@
   []
   (let [modules (.getResources (ClassLoader/getSystemClassLoader) "module.edn")]
     (while (.hasMoreElements modules)
-      (prn (.. modules nextElement)))))
+      (prn (str ">>>Module: "  (.getName (Thread/currentThread)) " " (.. modules nextElement))))))
 
 ;; TODO - make this reloadable...maybe using compare-and-set! with an atom
 (def module-cfg
@@ -56,6 +56,7 @@
     (let [[valid invalid] (split-with #(s/valid? :sys/module %) (load-module-cfg))]
       (doseq [interloper invalid]
         (log/errorf "Invalid module config: %s" (s/explain-str :sys/module interloper)))
+      (prn "valid-moduels>>> " valid)
       valid)))
 
 (defn load-module
@@ -63,7 +64,8 @@
    init function passing it the current system state."
   [module state]
   (let [{:keys [sys/description sys/init sys/name]} module]
-    (log/infof "loading module: %s %s %s" name init description)
+    (prn "LOADING MODULE " module)
+    ;;(log/infof "loading module: %s %s %s" name init description)
     (try
       (-> init
           str
@@ -86,10 +88,13 @@
    The init function can return some state, which is merged into a map and successivley passed to 
    init functions. Returns the merged results from all init functions."
   []
+  (prn "Load modules in order!!!!!!! Thread " (.getName (Thread/currentThread)))
   (let [modules @module-cfg
         deps (-> modules
                  build-deps
                  order-deps)]
+    (prn "DEPS>>>>>: " deps)
+    (prn-modules)
     (reduce (fn [accum module-name]
               (let [cfg (find-by-name module-name modules)]
                 (merge accum {module-name (load-module cfg accum)})))
@@ -111,7 +116,6 @@
   (def deps (-> (load-module-cfg) build-deps order-deps))
 
   (-> (load-module-cfg) build-deps)
-  (flatten (conj [{:a 1}] [{:b 1} {:c 1}]))
 
   (split-with #(s/valid? :sys/plugin %) intrinsics)
 
