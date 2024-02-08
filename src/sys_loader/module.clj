@@ -9,20 +9,20 @@
 (def intrinsics
   "Define modules that are baked-in to sys-loader"
   [#_{:sys/description "Database"
-    :sys/name :sys/db
-    :sys/deps []
-    :sys/init 'sys-loader.db/init}
-   {:sys/description "Logging"
-    :sys/name :sys/logging
-    :sys/deps [:sys/migrations]
-    :sys/init 'sys-loader.logging/init}
-   {:sys/description "Migrations"
-    :sys/name :sys/migrations
-    :sys/deps []
-    :sys/init 'sys-loader.migrations/init}
+      :sys/name :sys/db
+      :sys/deps []
+      :sys/init 'sys-loader.db/init}
+   #_{:sys/description "Logging"
+      :sys/name :sys/logging
+      :sys/deps [:sys/migrations]
+      :sys/init 'sys-loader.logging/init}
+   #_{:sys/description "Migrations"
+      :sys/name :sys/migrations
+      :sys/deps []
+      :sys/init 'sys-loader.migrations/init}
    {:sys/description "Prepl"
     :sys/name :sys/prepl
-    :sys/deps [:sys/logging]
+    :sys/deps []
     :sys/init 'sys-loader.prepl/init}])
 
 (defn load-module-cfg
@@ -56,7 +56,7 @@
     (let [[valid invalid] (split-with #(s/valid? :sys/module %) (load-module-cfg))]
       (doseq [interloper invalid]
         (log/errorf "Invalid module config: %s" (s/explain-str :sys/module interloper)))
-      (prn "valid-moduels>>> " valid)
+      #_(prn "valid-moduels>>> " valid)
       valid)))
 
 (defn load-module
@@ -64,8 +64,8 @@
    init function passing it the current system state."
   [module state]
   (let [{:keys [sys/description sys/init sys/name]} module]
-    (prn "LOADING MODULE " module)
-    ;;(log/infof "loading module: %s %s %s" name init description)
+    #_(prn "LOADING MODULE " module)
+    (log/infof "loading module: %s %s %s" name init description)
     (try
       (-> init
           str
@@ -87,18 +87,18 @@
    Invoke the init function in the appropriate order as specified by any dependencies listed.
    The init function can return some state, which is merged into a map and successivley passed to 
    init functions. Returns the merged results from all init functions."
-  []
+  [init-state]
   (prn "Load modules in order!!!!!!! Thread " (.getName (Thread/currentThread)))
   (let [modules @module-cfg
         deps (-> modules
                  build-deps
                  order-deps)]
-    (prn "DEPS>>>>>: " deps)
-    (prn-modules)
+    #_(prn "DEPS>>>>>: " deps)
+    #_(prn-modules)
     (reduce (fn [accum module-name]
               (let [cfg (find-by-name module-name modules)]
                 (merge accum {module-name (load-module cfg accum)})))
-            {}
+            init-state
             deps)))
 
 (comment
@@ -111,7 +111,6 @@
 
   intrinsics
   (load-module-cfg)
-  (load-modules-in-order!)
 
   (def deps (-> (load-module-cfg) build-deps order-deps))
 
