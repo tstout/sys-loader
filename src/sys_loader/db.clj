@@ -49,7 +49,7 @@
 (defn init [_]
   (let [server (mk-h2-server)]
     (try
-      (prn ">>>>>DB INIT!<<<<<<")
+      #_(prn ">>>>>DB INIT!<<<<<<")
       (server :start)
       ;;(log/info "DB started successfully")
       (catch Exception e

@@ -88,7 +88,7 @@
    The init function can return some state, which is merged into a map and successivley passed to 
    init functions. Returns the merged results from all init functions."
   [init-state]
-  (prn "Load modules in order!!!!!!! Thread " (.getName (Thread/currentThread)))
+  #_(prn "Load modules in order!!!!!!! Thread " (.getName (Thread/currentThread)))
   (let [modules @module-cfg
         deps (-> modules
                  build-deps

@@ -3,8 +3,7 @@
             [clojure.tools.logging :as log]
             [clojure.java.io :as io]
             [clojure.edn :as edn]
-            [sys-loader.bootstrap :refer [boot]]
-            [sys-loader.module :refer [load-modules-in-order!]])
+            [sys-loader.bootstrap :refer [sys-state]])
   (:import [java.time Instant Duration]
            #_[com.github.tstout.sysloader H2ConnFactory
               H2ConnFactory$Singleton])
@@ -23,17 +22,6 @@
 (defn t-diff-ms [a b]
   (-> (Duration/between (get-time a) (get-time b))
       .toMillis))
-
-(def sys-state
-  "The state of the system. This is a map of all modules that have been loaded.
-   The keys are the module's keyword name as defined in each module.edn file found
-   on the classpath."
-  (delay (load-modules-in-order! @boot)))
-
-(defn create-ds []
-  (->  @boot
-       :sys/db
-       :data-source))
 
 (defn -main [& args]
   (get-time :start)

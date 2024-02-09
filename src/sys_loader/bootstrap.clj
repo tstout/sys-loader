@@ -16,6 +16,18 @@
       (merge h2-db mig-fn log-fn))))
 
 
+(def sys-state
+  "The state of the system. This is a map of all modules that have been loaded.
+   The keys are the module's keyword name as defined in each module.edn file found
+   on the classpath."
+  (delay (load-modules-in-order! @boot)))
+
+(defn create-ds []
+  (->  @boot
+       :sys/db
+       :data-source))
+
+
 (comment
 
   (-> (Throwable.) .getStackTrace seq)
