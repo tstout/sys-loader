@@ -2,13 +2,14 @@
   (:require [sys-loader.module :refer [load-module-cfg
                                        load-modules-in-order!
                                        module-cfg]]
+            [sys-loader.bootstrap :refer [boot]]
             [clojure.test :refer [run-tests use-fixtures]]
             [expectations.clojure.test :refer [defexpect expect more-of more]]))
 
 (def ^:dynamic *system*)
 
 (defn with-system [work]
-  (let [system (load-modules-in-order!)]
+  (let [system (load-modules-in-order! @boot)]
     (try
       (binding [*system* system]
         (work))

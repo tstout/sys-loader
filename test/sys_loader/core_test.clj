@@ -8,6 +8,7 @@
 
 (use-fixtures :once setup)
 
+#_{:clj-kondo/ignore [:unresolved-symbol]}
 (defexpect example-test-label (expect 1 1))
 
 

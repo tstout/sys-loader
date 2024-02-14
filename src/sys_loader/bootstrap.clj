@@ -5,7 +5,6 @@
             [clojure.pprint :refer [pprint]]
             [sys-loader.module :refer [load-modules-in-order!]]))
 
-
 (def boot
   (delay
     #_(prn ">>>>>>>> Calling Boot <<<<<<<<<<<<<")

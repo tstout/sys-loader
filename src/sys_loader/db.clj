@@ -16,6 +16,8 @@
                 "/~/.sys-loader/db/sys-loader;jmx=true")})
 
 ;; TODO - support non-default password
+;; TODO consider using *command-line-args* dynamic var
+;; to pass H2 port override.
 (defn mk-datasource
   "Create a datasource. With no arguments, assume server. For specific
   control specify :server or :memory as argument."
