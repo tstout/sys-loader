@@ -3,6 +3,7 @@
 (defn find-a-node [deps already-have-nodes]
   (some (fn [[k v]]
           (when (empty? (remove already-have-nodes v)) k))
+        deps))
 
 (defn order-deps
   "Topological sort to determine proper dependency order.
@@ -30,7 +31,7 @@
    deps
    (map
     (fn [x] (rm-unknown
-                {(:sys/name x :unknown) (:sys/deps x [])})))
+             {(:sys/name x :unknown) (:sys/deps x [])})))
    (apply merge)))
 
 (comment
