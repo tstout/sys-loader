@@ -4,7 +4,7 @@
         <Console name="STDOUT">
             <PatternLayout pattern="%d - %t - %p - %c - %m%n" />
         </Console>
-        <!-- <Jdbc name="databaseAppender" tableName="EVENT_LOGS">
+        <Jdbc name="databaseAppender" tableName="EVENT_LOGS">
             <ConnectionFactory class="com.github.tstout.sysloader.H2ConnFactory" method="createDS" />
             <Column name="ID" pattern="%u" />
             <Column name="DATE_TIME" isEventTimestamp="true" />
@@ -12,12 +12,12 @@
             <Column name="LEVEL" pattern="%level" />
             <Column name="MESSAGE" pattern="%message" />
             <Column name="EXCEPTION" pattern="%ex{full}" />
-        </Jdbc> -->
+        </Jdbc>
     </Appenders>
     <Loggers>
-        <Root level="trace">
+        <Root level="info">
             <AppenderRef ref="STDOUT" />
-            <!-- <AppenderRef ref="databaseAppender" /> -->
+            <AppenderRef ref="databaseAppender" />
         </Root>
     </Loggers>
 </Configuration>

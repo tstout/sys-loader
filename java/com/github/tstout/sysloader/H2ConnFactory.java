@@ -6,19 +6,14 @@ import clojure.lang.Keyword;
 import javax.sql.DataSource;
 
 public class H2ConnFactory {
-    enum Singleton {
-        INSTANCE;
 
-        IFn createDsFn;
-
-        private Singleton() {
-            IFn require = Clojure.var("clojure.core", "require");
-            require.invoke(Clojure.read("sys-loader.core"));
-            createDsFn = Clojure.var("sys-loader.core", "create-ds");
-        }
-    }
-
+    // TODO - consider making this a pure clojure thing...
+    // The compile step can be a hassle.
     public static DataSource createDS() {
-        return DataSource.class.cast(Singleton.INSTANCE.createDsFn.invoke());
+        //System.out.println("------->>>>>Non-Singleton CREATE-DS Invoked");
+        IFn require = Clojure.var("clojure.core", "require");
+        require.invoke(Clojure.read("sys-loader.bootstrap"));
+        IFn createDsFn = Clojure.var("sys-loader.bootstrap", "create-ds");
+        return DataSource.class.cast(createDsFn.invoke());
     }
 }

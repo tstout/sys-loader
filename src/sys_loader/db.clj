@@ -16,6 +16,8 @@
                 "/~/.sys-loader/db/sys-loader;jmx=true")})
 
 ;; TODO - support non-default password
+;; TODO consider using *command-line-args* dynamic var
+;; to pass H2 port override.
 (defn mk-datasource
   "Create a datasource. With no arguments, assume server. For specific
   control specify :server or :memory as argument."
@@ -26,6 +28,7 @@
    ;;(log/infof "Creating data source for %s" (t jdbcUrls))
    (JdbcConnectionPool/create (t jdbcUrls) "sa" "")))
 
+;;(def memo-mk-datasource (memoize mk-datasource))
 
 (defn mk-h2-server
   "Create an H2 server on port 9092. Returns a function which accepts the operations
@@ -48,6 +51,7 @@
 (defn init [_]
   (let [server (mk-h2-server)]
     (try
+      #_(prn ">>>>>DB INIT!<<<<<<")
       (server :start)
       ;;(log/info "DB started successfully")
       (catch Exception e

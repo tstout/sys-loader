@@ -10,7 +10,7 @@
 
 (defn init [state]
   ;; TODO nested map destructuring might be slightly cleaner here.
-  (let [db (-> :sys/db state :data-source)
+  (let [;;db (-> :sys/db state :data-source)
         migrate (-> :sys/migrations state)]
     (migrate #'logging-ddl
              #'log4j2-ddl)

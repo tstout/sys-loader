@@ -31,7 +31,7 @@
    deps
    (map
     (fn [x] (rm-unknown
-                {(:sys/name x :unknown) (:sys/deps x [])})))
+             {(:sys/name x :unknown) (:sys/deps x [])})))
    (apply merge)))
 
 (comment
