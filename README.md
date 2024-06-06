@@ -43,6 +43,20 @@ Most apps/services I have in mind will need several modules/plugins: DB, Logging
 
 ## Database Migrations (forward only)
 
+## Building/Running
+There is currently a java class that needs compiling. This is related to configuring log4j2 jdbc logging. To compile the class:
+```bash
+clojure -T:build compile
+```
+Note: there is a branch _rm-java-code_ where I have attempted to 
+configure log4j with clojure code to remove this java
+dependency. This currently does not work, and I'm putting it on hold for now.
+Apps having sys-loader as a dependency will need to execute 
+```bash
+clojure -X:deps prep
+```
+to compile the class.
+
 # TODO 
 ## Monitoring
 Is JMX sufficient for the beginning? Save this for nice to have, but not necessary.
