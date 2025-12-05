@@ -23,7 +23,7 @@
         ))))
 
 (defn start-repl!
-   Returns the repl's server socket."
+   "Returns the repl's server socket."
   [opts]
   (log/info "attempting to start prepl...")
   (let [{:keys [bind-addr port]} opts
