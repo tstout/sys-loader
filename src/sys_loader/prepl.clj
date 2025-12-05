@@ -23,7 +23,6 @@
         ))))
 
 (defn start-repl!
-  "Start a prepl server based on the specified options.
    Returns the repl's server socket."
   [opts]
   (log/info "attempting to start prepl...")
