@@ -59,6 +59,40 @@
       #_(prn "valid-moduels>>> " valid)
       valid)))
 
+(defn invoke-pre-init [pre-fn-name state-map]
+  (log/infof "invoking pre-init function: %s" pre-fn-name)
+  (try
+    (-> pre-fn-name
+        str
+        (split #"/")
+        first
+        symbol
+        require) 
+    ((resolve pre-fn-name) state-map)
+    (catch Exception e
+      (log/error e))))
+
+(defn do-pre-init 
+  "Invoke the pre-init function for a module if it is defined.
+   Returns the state map (possibly updated)."
+  [module state-map] 
+  (let [{:keys [sys/pre-init]} module] 
+    (if pre-init
+      (merge state-map (invoke-pre-init pre-init state-map))
+      state-map)))
+
+(defn do-pre-inits
+  "Invoke any pre-init functions defined in the module configurations.
+   Pre-init functions are invoked before any modules are initialized.
+   This is intended to allow modules to provide configuration to any dependent
+   modules before those modules are initialized. Any map returned from the 
+   pre-init functions are merged into the system state map."
+  [modules state-map] 
+  (reduce (fn [accum module]
+            (merge accum (do-pre-init module accum)))
+          state-map
+          modules))
+
 (defn load-module
   "Given a module map (as defined in the spec :sys/module), load the module and invoke its
    init function passing it the current system state."
@@ -89,21 +123,28 @@
    init functions. Returns the merged results from all init functions."
   [init-state]
   #_(prn "Load modules in order!!!!!!! Thread " (.getName (Thread/currentThread)))
-  (let [modules @module-cfg
-        deps (-> modules
-                 build-deps
-                 order-deps)]
+  (let [modules          @module-cfg
+        pre-init-results (do-pre-inits modules init-state)
+        deps             (-> modules
+                             build-deps
+                             order-deps)]
     #_(prn "DEPS>>>>>: " deps)
     #_(prn-modules)
     (reduce (fn [accum module-name]
               (let [cfg (find-by-name module-name modules)]
                 (merge accum {module-name (load-module cfg accum)})))
-            init-state
+            pre-init-results
             deps)))
 
 (comment
   *e
+  
   @module-cfg
+
+
+  (->>  @module-cfg
+        (filter #(contains? % :sys/init))
+        (map :sys/name))
 
   (prn-modules)
 

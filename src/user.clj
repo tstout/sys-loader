@@ -8,14 +8,14 @@
 (defn ls
   "Print a listing of all the loaded modules."
   []
-  (pprint/print-table
-   [:module :description]
+  ;; (pprint/print-table
+  ;;  [:module :description]
    (map (fn [x] {:module x
                  :description
                  (-> (filter #(= x (:sys/name %)) @module-cfg)
                      first
                      :sys/description)})
-        (keys @sys-state))))
+        (keys @sys-state)))
 
 (defn loader
   "Execute a sys-loader command corresponding to the specified op.

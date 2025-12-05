@@ -13,11 +13,13 @@
 (s/def :sys/name keyword?)
 (s/def :sys/deps (s/coll-of keyword?))
 (s/def :sys/init symbol?)
+(s/def :sys/pre-init symbol?)
 
 (s/def :sys/module (s/keys :req [:sys/description 
                                  :sys/name
                                  :sys/deps
-                                 :sys/init]))
+                                 :sys/init]
+                           :opt [:sys/pre-init]))
 
 (s/def :sys/modules (s/coll-of :sys/module))
 
@@ -37,6 +39,7 @@
   (s/valid? :sys/module {:sys/description "Database"
                          :sys/name :sys/db
                          :sys/deps []
+                         :sys/foo 1
                          :sys/init 'sys-loader.db/init})
 
   (s/valid? :sys/modules [{:sys/description "Database"

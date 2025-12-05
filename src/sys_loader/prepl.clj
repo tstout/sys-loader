@@ -15,6 +15,8 @@
                                   :address bind-addr
                                   :port port
                                   :name "jvm"})]
+        (alter-var-root #'*repl* (constantly true)) ;; Bug work-around
+        (require '[clojure.repl.deps :refer :all])
         server)
       (catch java.net.BindException _
         ;; Not sure why this is happening
@@ -27,7 +29,7 @@
   (log/info "attempting to start prepl...")
   (let [{:keys [bind-addr port]} opts
         server (boot-server opts)]
-    (log/infof "Started prepl - %s:%d" bind-addr port)
+    (log/infof "Started prepl server - %s:%d" bind-addr port)
     server))
 
 (defn mk-repl
