@@ -25,8 +25,9 @@
 
 (comment
   *e
-  (s/describe :sys/module)
-  (s/valid? :sys/description 1)
+  (s/describe :sys/module) 
+  (s/valid? :sys/description 1) 
+
   (s/explain-data :sys/deps [:a "s"])
   (s/explain :sys/deps [:a "s"])
 
@@ -51,11 +52,13 @@
 
   (gen/generate (s/gen :sys/module))
   (gen/generate (s/gen :sys/modules))
-
+  
   #_{:sys/description "Database"
      :sys/name :sys/db
      :sys/deps []
      :sys/init 'sys-loader.db/init}
   ;;
+  
+  (string? )
   )
 

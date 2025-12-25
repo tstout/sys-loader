@@ -52,10 +52,10 @@
       ((-> operation repl-ops)))))
 
 
-(defn init [_]
+(defn init [s] 
   #_(start-repl! {:bind-addr "localhost" :port 8000})
   (let [repl-fn (mk-repl {:bind-addr (or (System/getenv "PREPL_BIND_ADDR") "localhost")
-                          :port      (or (System/getenv "PREPL_BIND_PORT") 8000)})]
+                          :port      (Integer/parseInt (or (System/getProperty "sys-loader.repl-port") "8000"))})]
     (repl-fn :start)
     repl-fn))
 

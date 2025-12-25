@@ -28,8 +28,6 @@
    ;;(log/infof "Creating data source for %s" (t jdbcUrls))
    (JdbcConnectionPool/create (t jdbcUrls) "sa" "")))
 
-;;(def memo-mk-datasource (memoize mk-datasource))
-
 (defn mk-h2-server
   "Create an H2 server on port 9092. Returns a function which accepts the operations
   :start  (start server listening on TCP port)
@@ -40,7 +38,11 @@
   (let
    [server (->
             ;; TODO - revisit the -ifNotExists setting
-            (into-array String ["-tcpAllowOthers" "-ifNotExists"])
+            (into-array String ["-tcpAllowOthers" 
+                                "-ifNotExists"
+                                "-tcp"
+                                "-tcpPort"
+                                (or (System/getProperty "sys-loader.h2-port") "9092")])
             Server/createTcpServer)
     server-ops {:start  (fn [] (.start server))
                 :stop   (fn [] (.stop server))
@@ -51,7 +53,7 @@
 (defn init [_]
   (let [server (mk-h2-server)]
     (try
-      #_(prn ">>>>>DB INIT!<<<<<<")
+      (prn ">>>>>DB INIT!<<<<<<")
       (server :start)
       ;;(log/info "DB started successfully")
       (catch Exception e

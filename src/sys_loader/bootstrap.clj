@@ -7,8 +7,8 @@
 
 (def boot
   (delay
-    #_(prn ">>>>>>>> Calling Boot <<<<<<<<<<<<<")
-    #_(clojure.pprint/pprint (-> (Throwable.) .getStackTrace seq))
+    (prn ">>>>>>>> Calling Boot <<<<<<<<<<<<<")
+    #_(clojure.pprint/pprint (-> (Thread/currentThread) .getStackTrace seq))
     (let [h2-db {:sys/db (db/init {})}
           mig-fn {:sys/migrations (migration/init h2-db)}
           log-fn {:sys/logging (logging/init mig-fn)}]
@@ -22,6 +22,7 @@
   (delay (load-modules-in-order! @boot)))
 
 (defn create-ds []
+  (prn "????? create-ds ????")
   (->  @boot
        :sys/db
        :data-source))

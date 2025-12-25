@@ -124,7 +124,7 @@
   [init-state]
   #_(prn "Load modules in order!!!!!!! Thread " (.getName (Thread/currentThread)))
   (let [modules          @module-cfg
-        pre-init-results (do-pre-inits modules init-state)
+        pre-init-results (do-pre-inits modules init-state) 
         deps             (-> modules
                              build-deps
                              order-deps)]
