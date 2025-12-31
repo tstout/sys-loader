@@ -28,37 +28,46 @@
    ;;(log/infof "Creating data source for %s" (t jdbcUrls))
    (JdbcConnectionPool/create (t jdbcUrls) "sa" "")))
 
-(defn mk-h2-server
+(def mk-h2-server
   "Create an H2 server on port 9092. Returns a function which accepts the operations
   :start  (start server listening on TCP port)
   :stop   (stop the server from listening)
   :server (return the underlying java server object)
   :info   (return a map of server details)"
-  []
-  (let
-   [server (->
-            ;; TODO - revisit the -ifNotExists setting
-            (into-array String ["-tcpAllowOthers" 
-                                "-ifNotExists"
-                                "-tcp"
-                                "-tcpPort"
-                                (or (System/getProperty "sys-loader.h2-port") "9092")])
-            Server/createTcpServer)
-    server-ops {:start  (fn [] (.start server))
-                :stop   (fn [] (.stop server))
-                :server (fn [] server)
-                :info   (fn [] (bean server))}]
-    (fn [operation & args] (-> (server-ops operation) (apply args)))))
+  (memoize
+   ;; TODO - memoize here is working around an issue I have not been able to solve yet. mk-h2-server
+   ;; is being called multiple times during system bootstrap after some refactoring causing an 
+   ;; address already in use exception.
+   (fn [_]
+     (let
+      [server     (->
+                   ;; TODO - revisit the -ifNotExists setting
+                   (into-array String ["-tcpAllowOthers"
+                                       "-ifNotExists"
+                                       "-tcp"
+                                       "-tcpPort"
+                                       (or (System/getProperty "sys-loader.h2-port") "9092")])
+                   Server/createTcpServer)
+       state      (atom :idle)
+       server-ops {:start  (fn [] (when (= :idle @state)
+                                    (reset! state :running)
+                                    (.start server)))
+                   :stop   (fn [] (when (= :running @state)
+                                    (reset! state :idle)
+                                    (.stop server)))
+                   :server (fn [] server)
+                   :info   (fn [] (bean server))}]
+       (fn [operation & args] (-> (server-ops operation) (apply args)))))))
 
 (defn init [_]
-  (let [server (mk-h2-server)]
+  (let [server (mk-h2-server :main-db)]
     (try
-      (prn ">>>>>DB INIT!<<<<<<")
+      #_(prn ">>>>>DB INIT!<<<<<<")
       (server :start)
-      ;;(log/info "DB started successfully")
+      (log/info "DB started successfully")
       (catch Exception e
         (log/error e)))
-    {:server server
+    {:server      server
      :data-source (mk-datasource)}))
 
 
@@ -71,7 +80,7 @@
 
   ((-> :server state) :stop)
 
-  (def server (mk-h2-server))
+  (def server (mk-h2-server :main-db))
   (server :start)
   (server :stop)
 
