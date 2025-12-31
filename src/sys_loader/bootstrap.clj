@@ -7,7 +7,7 @@
 
 (def boot
   (delay
-    (prn ">>>>>>>> Calling Boot <<<<<<<<<<<<<")
+    #_(prn ">>>>>>>> Calling Boot <<<<<<<<<<<<<")
     #_(clojure.pprint/pprint (-> (Thread/currentThread) .getStackTrace seq))
     (let [h2-db {:sys/db (db/init {})}
           mig-fn {:sys/migrations (migration/init h2-db)}
