@@ -1,4 +1,4 @@
-create table EVENT_LOGS (
+create table if not exists sys_loader.EVENT_LOGS (
     ID varchar(50) primary key,
     DATE_TIME timestamp,
     CLASS varchar(100),

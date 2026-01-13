@@ -2,7 +2,7 @@
                  org.clojure/tools.logging                 {:mvn/version "1.2.4"}
                  com.github.seancorfield/next.jdbc         {:git/url "https://github.com/seancorfield/next-jdbc.git"
                                                             :git/tag "v1.2.724"
-                                                            :git/sha "de432a2"}
+                                                            :git/sha "de432a2"} 
                  camel-snake-kebab/camel-snake-kebab       {:git/url "https://github.com/clj-commons/camel-snake-kebab.git"
                                                             :git/tag "version-0.4.2"
                                                             :git/sha "f4d963f"}

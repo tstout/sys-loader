@@ -14,8 +14,9 @@ one of a set of parts that can be connected or combined to build or complete som
 ```
 Clojure’s [cli-deps](https://clojure.org/guides/deps_and_cli) tools provide a compelling environment for combining code stored across multiple git or maven repositories.
 A sys-loader module is code stored in a maven or git repository. 
+
 ## Design
-A module is defined by a module.edn file, typically made available on the classpath as a resource. The EDN file contains a namespace qualified init function and a vector of dependent modules, which are (required), then invoked. The cli-deps tooling makes building up the classpath and invoking configured functions simple. For example, 
+A module is defined by a module.edn file made available on the classpath as a resource. The EDN file contains a namespace qualified init function and a vector of dependent modules, which are (required), then invoked. The cli-deps tooling makes building up the classpath and invoking configured functions simple. For example, 
 ```
 clojure -M:sys-loader -A:service-1:service-2:service-n
 ```
@@ -26,22 +27,36 @@ An example module.edn file:
 ```clojure
 [{:sys/description "ring module"
   :sys/name        :ring-module
-  :sys/deps        [:sys/logging]
   :sys/init        ring-module.core/init}]
 ```
-
+The init function is a single arg fn. sys-loader will call the init functions 
+with a map containing the following:
+```clojure
+{:sys/db {:server      H2 Server instance
+          :data-source Corresponding H2 datasource}
+ :sys/migrations migration-fn}
+```
 Sys-loader provides 
 ## REPL
-A [prepl](https://clojuredocs.org/clojure.core.server/prepl) server is started on port 8000. nRepl is nice, but perhaps initially prepl (built-in) should be used to avoid dependencies. Look here for more info: https://oli.me.uk/clojure-socket-prepl-cookbook/
+A [prepl](https://clojuredocs.org/clojure.core.server/prepl) server is started on port 8000. nRepl is nice, but perhaps initially prepl (provided by clojure) should be used to avoid dependencies. Look here for more info: https://oli.me.uk/clojure-socket-prepl-cookbook/
+The system property _sys-loader.repl-port_ can be set to override the default prepl port.
 
-## Logging
-Storing logs in a database is useful. By default logs are written to an H2 database. [tools.logging](https://github.com/clojure/tools.logging) with log4j2 provides the logging implementation.
+A functional Editor with PREPL integration can be found at 
+[repl-kit](https://github.com/tstout/repl-kit)
 
 ## Database
-An H2 server is provided. 
-Most apps/services I have in mind will need several modules/plugins: DB, Logging, pub/sub,  and scheduling. Consider supporting command line options to sys-loader to exclude baked-in modules/plugins from being loaded. The exclusion options are probably not needed. If the module is not listed in any dependency, then it won’t be started.
+An H2 server is started automatically on port 9092.
+The system property _sys-loader.h2-port_ can be set to override the default port.
+The following jdbc connection string can be used to connect to the H2 DB
+```
+jdbc:h2:tcp://localhost:9092/~/.sys-loader/db/sys-loader;jmx=true
+```
+## Logging
+Storing logs in a database is useful. By default logs are written to an H2 database. [tools.logging](https://github.com/clojure/tools.logging) with log4j2 providing the logging implementation. Not really happy with this, but have not found a better
+alternative to play nice with the java ecosystem. Logs can be found in the table *SYS_LOADER.EVENT_LOGS*.
 
 ## Database Migrations (forward only)
+
 
 ## Building/Running
 There is currently a java class that needs compiling. This is related to configuring log4j2 jdbc logging. To compile the class:
@@ -49,8 +64,9 @@ There is currently a java class that needs compiling. This is related to configu
 clojure -T:build compile
 ```
 Note: there is a branch _rm-java-code_ where I have attempted to 
-configure log4j with clojure code to remove this java
+configure log4j2 with clojure code to remove this java
 dependency. This currently does not work, and I'm putting it on hold for now.
+log4j tries hard to confound being configured by anything other than xml files.
 Apps having sys-loader as a dependency will need to execute 
 ```bash
 clojure -X:deps prep

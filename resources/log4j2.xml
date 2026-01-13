@@ -4,7 +4,7 @@
         <Console name="STDOUT">
             <PatternLayout pattern="%d - %t - %p - %c - %m%n" />
         </Console>
-        <Jdbc name="databaseAppender" tableName="EVENT_LOGS">
+        <Jdbc name="databaseAppender" tableName="sys_loader.EVENT_LOGS">
             <ConnectionFactory class="com.github.tstout.sysloader.H2ConnFactory" method="createDS" />
             <Column name="ID" pattern="%u" />
             <Column name="DATE_TIME" isEventTimestamp="true" />
