@@ -3,6 +3,9 @@
                  com.github.seancorfield/next.jdbc         {:git/url "https://github.com/seancorfield/next-jdbc.git"
                                                             :git/tag "v1.2.724"
                                                             :git/sha "de432a2"}
+                 camel-snake-kebab/camel-snake-kebab       {:git/url "https://github.com/clj-commons/camel-snake-kebab.git"
+                                                            :git/tag "version-0.4.2"
+                                                            :git/sha "f4d963f"}
         ;;sys-loader/h2appender {:local/root "java"}
                  
                  com.h2database/h2                         {:mvn/version "2.1.210"}
