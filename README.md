@@ -56,7 +56,7 @@ Storing logs in a database is useful. By default logs are written to an H2 datab
 alternative to play nice with the java ecosystem. Logs can be found in the table *SYS_LOADER.EVENT_LOGS*.
 
 ## Database Migrations (forward only)
-
+<TODO add more info about this>
 
 ## Building/Running
 There is currently a java class that needs compiling. This is related to configuring log4j2 jdbc logging. To compile the class:
@@ -66,8 +66,7 @@ clojure -T:build compile
 Note: there is a branch _rm-java-code_ where I have attempted to 
 configure log4j2 with clojure code to remove this java
 dependency. This currently does not work, and I'm putting it on hold for now.
-log4j tries hard to confound being configured by anything other than xml files.
-Apps having sys-loader as a dependency will need to execute 
+log4j tries hard to confound a jdbc adapter being configured by anything other than xml files and java code. Apps having sys-loader as a dependency will need to execute 
 ```bash
 clojure -X:deps prep
 ```
