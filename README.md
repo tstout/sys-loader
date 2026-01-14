@@ -56,7 +56,7 @@ Storing logs in a database is useful. By default logs are written to an H2 datab
 alternative to play nice with the java ecosystem. Logs can be found in the table *SYS_LOADER.EVENT_LOGS*.
 
 ## Database Migrations (forward only)
-<TODO add more info about this>
+TODO add more info about this
 
 ## Building/Running
 There is currently a java class that needs compiling. This is related to configuring log4j2 jdbc logging. To compile the class:
