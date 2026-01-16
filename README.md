@@ -27,21 +27,42 @@ An example module.edn file:
 ```clojure
 [{:sys/description "ring module"
   :sys/name        :ring-module
+  :sys/deps        []
   :sys/init        ring-module.core/init}]
 ```
-The init function is a single arg fn. sys-loader will call the init functions 
+This example has no other sys-loader module deps, thus the empty vector value for :sys/deps.
+If a module has dependencies, they would be specified in the :sys/deps vector as the value of the :sys/name key
+in the dependency module's declaration.
+
+The init function is a single arg fn. sys-loader will call each module's init function 
 with a map containing the following:
 ```clojure
-{:sys/db {:server      H2 Server instance
-          :data-source Corresponding H2 datasource}
- :sys/migrations migration-fn}
+{:sys/db {:server      #function[sys-loader.db/fn--12770/fn--12779]
+          :data-source #object[org.h2.jdbcx.JdbcConnectionPool 0x75208149 "org.h2.jdbcx.JdbcConnectionPool@75208149"]} 
+ :sys/migrations #function[clojure.core/partial/fn--5929]}
 ```
-Sys-loader provides 
-## REPL
-A [prepl](https://clojuredocs.org/clojure.core.server/prepl) server is started on port 8000. nRepl is nice, but perhaps initially prepl (provided by clojure) should be used to avoid dependencies. Look here for more info: https://oli.me.uk/clojure-socket-prepl-cookbook/
-The system property _sys-loader.repl-port_ can be set to override the default prepl port.
+The map at :sys/db contains the following
+```
+:server - a single arg fn which is a closure around an H2 TCP server instance. The fn accepts the following args:
+  :start  - start server listening on TCP port
+  :stop   - stop the server from listening
+  :server - return the underlying java server object
+  :info   - return a map of server details
 
-A functional Editor with PREPL integration can be found at 
+:data-source - a JDBC DataSource implementation provided by H2's connection pool. 
+```
+The other key is related to DB migrations
+
+```
+:sys/migrations - a fn which accepts a var bound to a fn to execute database DDL.
+TODO - need to expand on this with an example.
+```
+
+Sys-loader provides 
+## REPL Server
+A [prepl](https://clojuredocs.org/clojure.core.server/prepl) server is started on port 8000. nRepl is nice, but perhaps initially prepl (provided by clojure) should be used to avoid dependencies. The system property _sys-loader.repl-port_ can be set to override the default prepl port.
+
+A functional editor with PREPL integration can be found at 
 [repl-kit](https://github.com/tstout/repl-kit)
 
 ## Database
@@ -72,9 +93,3 @@ clojure -X:deps prep
 ```
 to compile the class.
 
-# TODO 
-## Monitoring
-Is JMX sufficient for the beginning? Save this for nice to have, but not necessary.
-
-## Scheduling
-Consider providing a standard scheduler perhaps based on chime. This has been working well for years now in [fin-kratzen](https://github.com/tstout/fin-kratzen).
