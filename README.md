@@ -51,7 +51,7 @@ The map at :sys/db contains the following
 
 :data-source - a JDBC DataSource implementation provided by H2's connection pool. 
 ```
-The other key is related to DB migrations
+The other map entry is related to DB migrations
 
 ```
 :sys/migrations - a fn which accepts a var bound to a fn to execute database DDL.
@@ -60,7 +60,7 @@ TODO - need to expand on this with an example.
 
 Sys-loader provides 
 ## REPL Server
-A [prepl](https://clojuredocs.org/clojure.core.server/prepl) server is started on port 8000. nRepl is nice, but perhaps initially prepl (provided by clojure) should be used to avoid dependencies. The system property _sys-loader.repl-port_ can be set to override the default prepl port.
+A [prepl](https://clojuredocs.org/clojure.core.server/prepl) server is started on port 8000. nnepl is nice, but prepl (provided by clojure) is used to avoid dependencies nrepl's numerous dependencies. The system property _sys-loader.repl-port_ can be set to override the default prepl port.
 
 A functional editor with PREPL integration can be found at 
 [repl-kit](https://github.com/tstout/repl-kit)

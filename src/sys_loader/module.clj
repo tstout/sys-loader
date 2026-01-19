@@ -55,8 +55,7 @@
   (delay
     (let [[valid invalid] (split-with #(s/valid? :sys/module %) (load-module-cfg))]
       (doseq [interloper invalid]
-        (log/errorf "Invalid module config: %s" (s/explain-str :sys/module interloper)))
-      #_(prn "valid-moduels>>> " valid)
+        (log/errorf "Invalid module config: %s" (s/explain-str :sys/module interloper))) 
       valid)))
 
 (defn invoke-pre-init [pre-fn-name state-map]
@@ -86,7 +85,8 @@
    Pre-init functions are invoked before any modules are initialized.
    This is intended to allow modules to provide configuration to any dependent
    modules before those modules are initialized. Any map returned from the 
-   pre-init functions are merged into the system state map."
+   pre-init functions are merged into the system state map.
+   Note: I'm leaning towards removing this functionality..."
   [modules state-map] 
   (reduce (fn [accum module]
             (merge accum (do-pre-init module accum)))
@@ -97,8 +97,7 @@
   "Given a module map (as defined in the spec :sys/module), load the module and invoke its
    init function passing it the current system state."
   [module state]
-  (let [{:keys [sys/description sys/init sys/name]} module]
-    #_(prn "LOADING MODULE " module)
+  (let [{:keys [sys/description sys/init sys/name]} module] 
     (log/infof "loading module: %s %s %s" name init description)
     (try
       (-> init

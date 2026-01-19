@@ -2,12 +2,22 @@
   "Relational DB Support"
   (:require [next.jdbc :as jdbc]
             [clojure.tools.logging :as log])
-  (:import [java.net InetAddress]
+  (:import [java.net ServerSocket]
            [org.h2.tools Server]
            [org.h2.jdbcx JdbcConnectionPool]))
 
-#_(defn host-name []
-    (.. InetAddress getLocalHost getHostName))
+(defn port-in-use?
+  "Checks if a given TCP port is already in use on localhost."
+  [port]
+  (try 
+    (with-open [socket (ServerSocket. port)]
+      (.setReuseAddress socket true) 
+      false)
+    (catch java.io.IOException _
+      true)))
+
+(defn h2-port []
+  (or (System/getProperty "sys-loader.h2-port") "9092"))
 
 (def jdbcUrls
   {:memory "jdbc:h2:mem:sys-loader;DB_CLOSE_DELAY=-1"
@@ -46,7 +56,7 @@
                                        "-ifNotExists"
                                        "-tcp"
                                        "-tcpPort"
-                                       (or (System/getProperty "sys-loader.h2-port") "9092")])
+                                       (h2-port)])
                    Server/createTcpServer)
        state      (atom :idle)
        server-ops {:start  (fn [] (when (= :idle @state)
@@ -59,13 +69,30 @@
                    :info   (fn [] (bean server))}]
        (fn [operation & args] (-> (server-ops operation) (apply args)))))))
 
+(def no-op-server 
+  "A server which does nothing. It is assumed that another sys-loader may
+   already be running the H2 TCP server."
+  (fn [operation & args]
+    {:pre [(#{:start :stop :server :info} operation)]}
+    (case operation
+      :start  (log/info "no-op server start")
+      :stop   (log/info "no-op server stop")
+      :server (log/info "no-op server server")
+      :info   (log/info "no-op server info"))))
+
 (defn init [_]
-  (let [server (mk-h2-server :main-db)]
+  ;; Note: it is possible that another sys-loader instance is already running
+  ;; the H2 TCP server. In that case, we do not attempt to start another
+  (let [server (if (-> (h2-port) Integer/parseInt port-in-use?)
+                 no-op-server
+                 (mk-h2-server :main-db))]
     (try
-      #_(prn ">>>>>DB INIT!<<<<<<")
+      (log/info "Attempting to start H2 DB server...")
       (server :start)
-      (log/info "DB started successfully")
-      (catch Exception e
+      (log/info "DB started successfully") 
+      (catch java.net.BindException _ 
+        (log/warn "DB server already running - proceeding"))
+      (catch Throwable e
         (log/error e)))
     {:server      server
      :data-source (mk-datasource)}))
@@ -73,6 +100,8 @@
 
 (comment
   *e
+  (port-in-use? 9092)
+  (-> (h2-port) Integer/parseInt port-in-use?)
   (def state (init {}))
   (def mem-ds (mk-datasource :memory))
 
