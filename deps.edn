@@ -8,7 +8,7 @@
                                                             :git/sha "f4d963f"}
         ;;sys-loader/h2appender {:local/root "java"}
                  
-                 com.h2database/h2                         {:mvn/version "2.1.210"}
+                 com.h2database/h2                         {:mvn/version "2.4.240"}
                  org.apache.logging.log4j/log4j-api        {:mvn/version "2.17.0"}
                  org.apache.logging.log4j/log4j-core       {:mvn/version "2.17.0"}
                  org.apache.logging.log4j/log4j-slf4j-impl {:mvn/version "2.17.0"}}
