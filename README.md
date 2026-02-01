@@ -2,8 +2,8 @@
 ```clojure
   com.github.tstout/sys-loader
     {:git/url "https://github.com/tstout/sys-loader"
-     :git/tag "v1.1.9"
-     :git/sha "f529f82"}
+     :git/tag "v1.1.10"
+     :git/sha "88a0954"}
 ```
 
 # Overview
