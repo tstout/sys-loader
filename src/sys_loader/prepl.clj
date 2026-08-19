@@ -19,7 +19,8 @@
         (require '[clojure.repl.deps :refer :all])
         server)
       (catch java.net.BindException _
-        ;; Not sure why this is happening
+        (log/errorf 
+         "Failed to start prepl server on %s:%d - port already in use" bind-addr port)
         ))))
 
 (defn start-repl!
