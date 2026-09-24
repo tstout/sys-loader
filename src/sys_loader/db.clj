@@ -72,7 +72,7 @@
 (def no-op-server 
   "A server which does nothing. It is assumed that another sys-loader may
    already be running the H2 TCP server."
-  (fn [operation & args]
+  (fn [operation & _]
     {:pre [(#{:start :stop :server :info} operation)]}
     (case operation
       :start  (log/info "no-op server start")
@@ -97,6 +97,17 @@
     {:server      server
      :data-source (mk-datasource)}))
 
+(defn with-ds [ds f]
+  {:pre [(fn? f)]}
+  (with-open [conn (jdbc/get-connection ds)]
+    (f conn)))
+
+(defn h2-version [ds] 
+  (with-ds ds (fn [conn]
+                (->
+                 (jdbc/execute! conn ["select H2VERSION() VERSION"])
+                 first
+                 :VERSION))))
 
 (comment
   *e

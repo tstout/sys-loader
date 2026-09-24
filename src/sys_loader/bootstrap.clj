@@ -2,13 +2,16 @@
   (:require [sys-loader.db :as db]
             [sys-loader.migrations :as migration]
             [sys-loader.logging :as logging] 
-            [sys-loader.module :refer [load-modules-in-order!]]))
+            [sys-loader.module :refer [load-modules-in-order!]]
+            [clojure.tools.logging :as log]))
 
 (def boot
   (delay 
     (let [h2-db  {:sys/db (db/init {})}
           mig-fn {:sys/migrations (migration/init h2-db)}
-          log-fn {:sys/logging (logging/init mig-fn)}]
+          log-fn {:sys/logging (logging/init mig-fn)}
+          _      (log/infof  "H2 Database Version %s" 
+                             (db/h2-version (-> :sys/db h2-db :data-source)))]
       (merge h2-db mig-fn log-fn))))
 
 
