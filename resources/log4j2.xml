@@ -8,6 +8,7 @@
             <ConnectionFactory class="com.github.tstout.sysloader.H2ConnFactory" method="createDS" />
             <Column name="ID" pattern="%u" />
             <Column name="DATE_TIME" isEventTimestamp="true" />
+            <Column name="APP_NAME" pattern="${sys:sys-loader.application-name:-unknown}" />
             <Column name="CLASS" pattern="%logger" />
             <Column name="LEVEL" pattern="%level" />
             <Column name="MESSAGE" pattern="%message" />

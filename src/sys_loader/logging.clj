@@ -5,11 +5,15 @@
 (defn log4j2-ddl [run-ddl]
   (run-ddl "log4j2"))
 
+(defn log4j2-app-name-ddl [run-ddl]
+  (run-ddl "log4j2-app-name"))
+
 (defn init [state]
   ;; TODO nested map destructuring might be slightly cleaner here.
   (let [;;db (-> :sys/db state :data-source)
         migrate (-> :sys/migrations state)]
-    (migrate #'log4j2-ddl)
+    (migrate #'log4j2-ddl 
+             #'log4j2-app-name-ddl)
     (log/info "Logging Initialized")
     #()))
 
