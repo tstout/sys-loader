@@ -2,7 +2,7 @@
 ```clojure
   com.github.tstout/sys-loader
     {:git/url "https://github.com/tstout/sys-loader"
-     :git/tag "v1.1.12"
+     :git/tag "v1.1.13"
      :git/sha "494b2db"}
 ```
 
@@ -75,6 +75,10 @@ jdbc:h2:tcp://localhost:9092/~/.sys-loader/db/sys-loader;jmx=true
 ## Logging
 Storing logs in a database is useful. By default logs are written to an H2 database. [tools.logging](https://github.com/clojure/tools.logging) with log4j2 providing the logging implementation. Not really happy with this, but have not found a better
 alternative to play nice with the java ecosystem. Logs can be found in the table *SYS_LOADER.EVENT_LOGS*.
+The `APP_NAME` column is populated from the `sys-loader.application-name` JVM system property. It defaults to `unknown` when the property is not set. Set it when launching the application:
+```bash
+clojure -J-Dsys-loader.application-name=my-app -M:sys-loader
+```
 
 ## Database Migrations (forward only)
 TODO add more info about this
