@@ -3,7 +3,7 @@
   com.github.tstout/sys-loader
     {:git/url "https://github.com/tstout/sys-loader"
      :git/tag "v1.1.13"
-     :git/sha "494b2db"}
+     :git/sha "fc309db"}
 ```
 
 # Overview
