@@ -9,6 +9,7 @@
             <Column name="ID" pattern="%u" />
             <Column name="DATE_TIME" isEventTimestamp="true" />
             <Column name="APP_NAME" pattern="${sys:sys-loader.application-name:-unknown}" />
+            <Column name="THREAD_NAME" pattern="%t" />
             <Column name="CLASS" pattern="%logger" />
             <Column name="LEVEL" pattern="%level" />
             <Column name="MESSAGE" pattern="%message" />
